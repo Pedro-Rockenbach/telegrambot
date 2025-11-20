@@ -53,13 +53,44 @@ def classificar_imc(imc):
     return "Obesidade grau III (mórbida)"
 
 
+BOAS_VINDAS = (
+    "Olá, seja bem-vindo! Eu sou o *Hermes Bot*, seu assistente pessoal em saúde. 👋\n\n"
+    "Posso te ajudar com cálculos rápidos (ex.: IMC), dar informações simples sobre "
+    "saúde e orientar você a buscar ajuda profissional quando necessário.\n\n"
+    "Use o menu abaixo para começar."
+)
+
+DISCLAIMER = (
+    "⚠️ *Aviso importante*: as informações fornecidas por este bot são apenas de caráter "
+    "informativo e não substituem a avaliação, diagnóstico ou tratamento de um profissional "
+    "de saúde qualificado. Em caso de dúvidas, sintomas graves ou emergência, procure um médico "
+    "ou serviço de saúde imediatamente."
+)
+
+
 @bot.message_handler(commands=["start", "menu"])
 def start(msg):
-    bot.send_message(
-        msg.chat.id,
-        "Bem-vindo! Escolha uma opção:",
-        reply_markup=criar_menu_principal(one_time=False),
-    )
+    """
+    Ao receber /start ou /menu, envia mensagem de boas-vindas + disclaimer.
+    O primeiro envio traz o teclado; o disclaimer vem logo em seguida.
+    """
+    try:
+        # Envia mensagem de boas-vindas com teclado
+        bot.send_message(
+            msg.chat.id,
+            BOAS_VINDAS,
+            reply_markup=criar_menu_principal(one_time=False),
+            parse_mode="Markdown",
+        )
+
+        # Envia disclaimer em seguida (sem keyboard para evitar sobrescrever)
+        bot.send_message(
+            msg.chat.id,
+            DISCLAIMER,
+            parse_mode="Markdown",
+        )
+    except Exception as e:
+        logger.exception("Erro ao enviar mensagens de boas-vindas/disclaimer: %s", e)
 
 
 @bot.message_handler(
@@ -191,4 +222,3 @@ if __name__ == "__main__":
     logger.info("Bot rodando (polling)...")
     # Mantém polling contínuo; Railway irá manter o processo vivo
     bot.polling(non_stop=True)
-
