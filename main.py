@@ -24,6 +24,11 @@ bot = telebot.TeleBot(TOKEN)
 def criar_menu_principal(one_time=False):
     kb = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=one_time)
     kb.add(KeyboardButton("Calcular IMC"))
+    kb.add(KeyboardButton("Calcular Taxa metabólica basal"))
+    kb.add(KeyboardButton("Calcular hidratação"))
+    kb.add(KeyboardButton("Calcular risco cardiaco"))
+    kb.add(KeyboardButton("Aferir pressão"))
+    kb.add(KeyboardButton("Números de emergência"))
     kb.add(KeyboardButton("Sair"))
     return kb
 
