@@ -5,7 +5,6 @@ from .config import TOKEN, logger
 
 # import handlers modules (they define functions we call below)
 from .imc_handlers import iniciar_imc
-from .risk_handlers import iniciar_risco
 from .water_handlers import iniciar_agua
 from .tmb_handlers import iniciar_tmb
 from .common_handlers import register_common_handlers
