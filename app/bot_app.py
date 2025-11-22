@@ -22,6 +22,7 @@ def create_bot():
         lambda m: iniciar_imc(bot, m),
         func=lambda m: (m.text or "").strip().lower() in ("calcular imc", "1"),
     )
+
     bot.register_message_handler(
         lambda m: iniciar_agua(bot, m),
         func=lambda m: (m.text or "").strip().lower()
@@ -37,3 +38,4 @@ def create_bot():
 
 
 bot = create_bot()
+
