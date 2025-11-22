@@ -5,6 +5,8 @@ from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 def criar_menu_principal(one_time=False):
     kb = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=one_time)
     kb.add(KeyboardButton("Calcular IMC"))
+    kb.add(KeyboardButton("Calcular Água"))
+    kb.add(KeyboardButton("Calcular TMB"))
     kb.add(KeyboardButton("Sair"))
     return kb
 
