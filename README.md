@@ -1,11 +1,3 @@
-# Telegram IMC Bot - Deploy no Railway
+# Hermes Bot - o chatbot de saúde que auxilia os usúarios em questões relacionadas a saúde geral
 
-Arquivos: `main.py`, `requirements.txt`, `Procfile`.
-
-## Testar localmente
-
-1. Crie e ative um virtualenv:
-```bash
-python -m venv venv
-source venv/bin/activate   # Linux/Mac
-venv\Scripts\activate      # Windows
+Esse projeto faz parte da matéria de extensão I do curso de Ciência da Computação da UNIOESTE.
