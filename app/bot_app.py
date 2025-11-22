@@ -3,39 +3,39 @@ from typing import cast
 from telebot import TeleBot
 from .config import TOKEN, logger
 
-# import handlers modules (they define functions we call below)
 from .imc_handlers import iniciar_imc
 from .water_handlers import iniciar_agua
 from .tmb_handlers import iniciar_tmb
-from .common_handlers import register_common_handlers
+from .common_handlers import register_common_handlers, register_fallback
 
 
 def create_bot():
     token = cast(str, TOKEN)
     bot = TeleBot(token)
 
-    # Register common handlers (start/menu/sair/fallback) - pass iniciar_imc for backward compatibility
+    # Register start and sair (common), but NOT fallback yet
     register_common_handlers(bot, iniciar_imc)
 
-    # Register other menu handlers explicitly and consistently
+    # Register specific handlers FIRST (priority)
     bot.register_message_handler(
         lambda m: iniciar_imc(bot, m),
         func=lambda m: (m.text or "").strip().lower() in ("calcular imc", "1"),
     )
-
     bot.register_message_handler(
         lambda m: iniciar_agua(bot, m),
         func=lambda m: (m.text or "").strip().lower()
-        in ("calcular água", "calcular agua", "água", "agua"),
+        in ("calcular água", "calcular agua", "água", "agua", "calcular agua"),
     )
     bot.register_message_handler(
         lambda m: iniciar_tmb(bot, m),
         func=lambda m: (m.text or "").strip().lower() in ("calcular tmb", "tmb"),
     )
 
+    # Agora registre o fallback por último (garante que ele só será acionado se nenhuma das regras acima combinar)
+    register_fallback(bot, iniciar_imc)
+
     logger.info("Handlers registrados.")
     return bot
 
 
 bot = create_bot()
-

@@ -14,15 +14,6 @@ DISCLAIMER = (
 
 
 def register_common_handlers(bot, iniciar_imc_func):
-    """
-    Registra handlers universais:
-    - /start e /menu: envia boas-vindas + disclaimer
-    - sair: cancela o fluxo atual
-    - fallback: rota de fallback que encaminha para iniciar_imc_func se texto indicar
-    Note: iniciar_imc_func é passado apenas para manter compatibilidade com o menu antigo;
-    mas o IMC agora tem seu próprio módulo e também será registrado explicitamente em bot_app.
-    """
-
     def start_handler(msg):
         try:
             bot.send_message(
@@ -40,6 +31,18 @@ def register_common_handlers(bot, iniciar_imc_func):
             msg.chat.id, texto_cancelado(), reply_markup=criar_menu_principal(False)
         )
 
+    bot.register_message_handler(start_handler, commands=["start", "menu"])
+    bot.register_message_handler(
+        sair_handler, func=lambda m: (m.text or "").strip().lower() in ("sair", "/sair")
+    )
+
+
+def register_fallback(bot, iniciar_imc_func):
+    """
+    Registra apenas o fallback — deve ser chamado por último, depois de registrar
+    todos os handlers específicos (IMC, Água, TMB, Risco etc).
+    """
+
     def fallback(msg):
         txt = (msg.text or "").strip().lower()
         # manter compatibilidade: se querem o IMC via texto, encaminha para a função passada
@@ -56,8 +59,4 @@ def register_common_handlers(bot, iniciar_imc_func):
                 reply_markup=criar_menu_principal(False),
             )
 
-    bot.register_message_handler(start_handler, commands=["start", "menu"])
-    bot.register_message_handler(
-        sair_handler, func=lambda m: (m.text or "").strip().lower() in ("sair", "/sair")
-    )
     bot.register_message_handler(fallback, content_types=["text"])
