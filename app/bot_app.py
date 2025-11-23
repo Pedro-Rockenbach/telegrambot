@@ -24,15 +24,19 @@ def create_bot():
     bot.register_message_handler(
         lambda m: iniciar_agua(bot, m),
         func=lambda m: (m.text or "").strip().lower()
-        in ("calcular água", "calcular agua", "água", "agua", "calcular agua"),
+        in ("calcular água", "calcular agua", "água", "agua"),
     )
     bot.register_message_handler(
         lambda m: iniciar_tmb(bot, m),
         func=lambda m: (m.text or "").strip().lower() in ("calcular tmb", "tmb"),
     )
+
+    # --- CORREÇÃO AQUI ---
+    # Adicionado "calcular pressão" e "calcular pressao" na lista
     bot.register_message_handler(
         lambda m: iniciar_pressao(bot, m),
-        func=lambda m: (m.text or "").strip().lower() in ("pressão", "pressao"),
+        func=lambda m: (m.text or "").strip().lower()
+        in ("pressão", "pressao", "calcular pressão", "calcular pressao"),
     )
 
     bot.register_message_handler(
@@ -44,13 +48,22 @@ def create_bot():
         lambda m: enviar_info_pressao(bot, m),
         func=lambda m: (m.text or "").strip().lower() == "mais informações",
     )
+
+    # --- CORREÇÃO AQUI ---
+    # Adicionado .strip().lower() para normalizar o texto
+    # Adicionado versões com acento e o texto exato do botão
     bot.register_message_handler(
         lambda m: iniciar_risco(bot, m),
-        func=lambda m: (m.text)
-        in ("calcular risco cardiaco", "risco cardiaco", "calcular risco cardiaco"),
+        func=lambda m: (m.text or "").strip().lower()
+        in (
+            "calcular risco cardiaco",
+            "calcular risco cardíaco",
+            "risco cardiaco",
+            "risco cardíaco",
+        ),
     )
 
-    # Agora registre o fallback por último (garante que ele só será acionado se nenhuma das regras acima combinar)
+    # Agora registre o fallback por último
     register_fallback(bot, iniciar_imc)
 
     logger.info("Handlers registrados.")

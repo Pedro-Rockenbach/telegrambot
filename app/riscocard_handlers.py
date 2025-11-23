@@ -15,6 +15,7 @@ RISK_DISCLAIMER = (
     "Se tiver dúvidas ou sintomas, procure um profissional de saúde."
 )
 
+IDADE = "Digite sua idade em anos (ex: 42): "
 # ---------- Fluxo: iniciar -> idade -> sexo -> tabagismo -> diabetes -> sbp -> colesterol -> resultado
 
 
