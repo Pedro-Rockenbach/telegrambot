@@ -6,7 +6,7 @@ from .config import TOKEN, logger
 from .imc_handlers import iniciar_imc
 from .water_handlers import iniciar_agua
 from .tmb_handlers import iniciar_tmb
-from .pressure_handlers import iniciar_pressao, iniciar_afericao, enviar_info_pressao
+from .pressao_handlers import iniciar_pressao, iniciar_afericao, enviar_info_pressao
 from .common_handlers import register_common_handlers, register_fallback
 
 
