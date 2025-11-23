@@ -7,6 +7,7 @@ def criar_menu_principal(one_time=False):
     kb.add(KeyboardButton("Calcular IMC"))
     kb.add(KeyboardButton("Calcular Água"))
     kb.add(KeyboardButton("Calcular TMB"))
+    kb.add(KeyboardButton("Calcular pressão"))
     kb.add(KeyboardButton("Sair"))
     return kb
 

@@ -6,6 +6,7 @@ from .config import TOKEN, logger
 from .imc_handlers import iniciar_imc
 from .water_handlers import iniciar_agua
 from .tmb_handlers import iniciar_tmb
+from .pressure_handlers import iniciar_pressao, iniciar_afericao, enviar_info_pressao
 from .common_handlers import register_common_handlers, register_fallback
 
 
@@ -29,6 +30,20 @@ def create_bot():
     bot.register_message_handler(
         lambda m: iniciar_tmb(bot, m),
         func=lambda m: (m.text or "").strip().lower() in ("calcular tmb", "tmb"),
+    )
+    bot.register_message_handler(
+        lambda m: iniciar_pressao(bot, m),
+        func=lambda m: (m.text or "").strip().lower() in ("pressão", "pressao"),
+    )
+
+    bot.register_message_handler(
+        lambda m: iniciar_afericao(bot, m),
+        func=lambda m: (m.text or "").strip().lower() == "aferir pressão",
+    )
+
+    bot.register_message_handler(
+        lambda m: enviar_info_pressao(bot, m),
+        func=lambda m: (m.text or "").strip().lower() == "mais informações",
     )
 
     # Agora registre o fallback por último (garante que ele só será acionado se nenhuma das regras acima combinar)
