@@ -12,8 +12,13 @@ DISCLAIMER = (
     "e não substituem a avaliação de um profissional de saúde. Em caso de emergência, procure atendimento."
 )
 
+USO_DADOS = (
+    "⚠️*Sobre o uso de dados* : este bot não armazena nem compartilha qualquer dado pessoal informado durante a conversa. "
+    "Todas as informações são processadas apenas temporariamente para fornecer o cálculo solicitado, em conformidade com os princípios da LGPD(Lei Geral de Proteção de Dados Pessoais) ."
+)
 
-def register_common_handlers(bot, iniciar_imc_func):
+
+def register_common_handlers(bot, imc):
     def start_handler(msg):
         try:
             bot.send_message(
@@ -23,6 +28,7 @@ def register_common_handlers(bot, iniciar_imc_func):
                 parse_mode="Markdown",
             )
             bot.send_message(msg.chat.id, DISCLAIMER, parse_mode="Markdown")
+            bot.send_message(msg.chat.id, USO_DADOS, parse_mode="Markdown")
         except Exception as e:
             logger.exception("Erro ao enviar start/disclaimer: %s", e)
 

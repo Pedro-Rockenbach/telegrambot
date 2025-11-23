@@ -7,6 +7,7 @@ from .imc_handlers import iniciar_imc
 from .water_handlers import iniciar_agua
 from .tmb_handlers import iniciar_tmb
 from .pressao_handlers import iniciar_pressao, iniciar_afericao, enviar_info_pressao
+from .riscocard_handlers import iniciar_risco
 from .common_handlers import register_common_handlers, register_fallback
 
 
@@ -14,10 +15,8 @@ def create_bot():
     token = cast(str, TOKEN)
     bot = TeleBot(token)
 
-    # Register start and sair (common), but NOT fallback yet
     register_common_handlers(bot, iniciar_imc)
 
-    # Register specific handlers FIRST (priority)
     bot.register_message_handler(
         lambda m: iniciar_imc(bot, m),
         func=lambda m: (m.text or "").strip().lower() in ("calcular imc", "1"),
@@ -44,6 +43,11 @@ def create_bot():
     bot.register_message_handler(
         lambda m: enviar_info_pressao(bot, m),
         func=lambda m: (m.text or "").strip().lower() == "mais informações",
+    )
+    bot.register_message_handler(
+        lambda m: iniciar_risco(bot, m),
+        func=lambda m: (m.text)
+        in ("calcular risco cardiaco", "risco cardiaco", "calcular risco cardiaco"),
     )
 
     # Agora registre o fallback por último (garante que ele só será acionado se nenhuma das regras acima combinar)
