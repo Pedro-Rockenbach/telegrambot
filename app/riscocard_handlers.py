@@ -6,8 +6,8 @@ from .config import logger
 RISK_INTRO = (
     "Vamos estimar um risco cardiovascular aproximado.\n\n"
     "Vou te fazer algumas perguntas rápidas (idade, sexo, tabagismo, diabetes, "
-    "pressão sistólica e colesterol total). Responda usando números ou 'Sim'/'Não'.\n\n"
-    "Para cancelar a qualquer momento digite 'Sair'."
+    "pressão sistólica e colesterol total).\n\n\n"
+    "Digite sua idade em anos (ex: 32): "
 )
 
 RISK_DISCLAIMER = (
@@ -266,7 +266,7 @@ def _calcular_risco(data: Dict) -> str:
         category = "Risco muito alto"
 
     resumo = (
-        f"*Estimativa de risco cardíaco (heurística simplificada)*\n\n"
+        f"*Estimativa de risco cardíaco*\n\n"
         f"Categoria: *{category}*\n"
         f"Estimativa: *{risk_pct}* (apenas indicativa)\n\n"
         f"_Pontos totais_: {points}\n\n"
