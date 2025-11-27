@@ -57,7 +57,7 @@ def pegar_idade(message, data: Dict, bot):
         "Qual seu sexo? ",
         reply_markup=ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
         .add(KeyboardButton("Masculino"))
-        .add(KeyboardButton("Feminio"))
+        .add(KeyboardButton("Feminino"))
         .add(KeyboardButton("Sair")),
     )
     bot.register_next_step_handler(sent2, pegar_sexo, data, bot)
