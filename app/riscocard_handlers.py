@@ -1,7 +1,6 @@
 from typing import Dict
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 from .keyboard import criar_menu_principal, texto_cancelado, checar_cancelamento
-from .config import logger
 
 RISK_INTRO = (
     "Vamos estimar um risco cardiovascular aproximado.\n\n"
@@ -28,9 +27,6 @@ def sim_ou_nao():
 
 def iniciar_risco(bot, msg):
     """Inicia o fluxo de cálculo de risco cardíaco."""
-    logger.info(
-        "Iniciando fluxo de risco para chat_id=%s", getattr(msg.chat, "id", None)
-    )
     sent = bot.send_message(msg.chat.id, RISK_INTRO)
     # pergunta idade no próximo passo
     bot.register_next_step_handler(sent, pegar_idade, {}, bot)

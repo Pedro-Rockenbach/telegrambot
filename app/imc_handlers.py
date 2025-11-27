@@ -1,10 +1,6 @@
 # app/imc_handlers.py
-from typing import Any
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 from .keyboard import criar_menu_principal, texto_cancelado, checar_cancelamento
-from .config import logger
-
-logger.debug("imc_handlers módulo importado")
 
 
 def _sair_markup():
@@ -27,9 +23,8 @@ def classificar_imc(imc: float) -> str:
     return "Obesidade grau III (mórbida)"
 
 
-def iniciar_imc(bot: Any, msg: Any):
+def iniciar_imc(bot, msg):
     """Inicia o fluxo de cálculo do IMC (pergunta peso)."""
-    logger.info("Iniciando fluxo IMC para chat_id=%s", getattr(msg.chat, "id", None))
     sent = bot.send_message(
         msg.chat.id,
         "Ok — vamos calcular seu IMC.\nDigite seu peso em kg (ex: 70 ou 70.5). Para cancelar, digite 'Sair'.",
@@ -38,7 +33,7 @@ def iniciar_imc(bot: Any, msg: Any):
     bot.register_next_step_handler(sent, pegar_peso, bot)
 
 
-def pegar_peso(message: Any, bot: Any):
+def pegar_peso(message, bot):
     if checar_cancelamento(message.text):
         bot.send_message(
             message.chat.id, texto_cancelado(), reply_markup=criar_menu_principal(False)
@@ -65,7 +60,7 @@ def pegar_peso(message: Any, bot: Any):
     bot.register_next_step_handler(sent2, pegar_altura, bot, peso)
 
 
-def pegar_altura(message: Any, bot: Any, peso: float):
+def pegar_altura(message, bot, peso):
     if checar_cancelamento(message.text):
         bot.send_message(
             message.chat.id, texto_cancelado(), reply_markup=criar_menu_principal(False)

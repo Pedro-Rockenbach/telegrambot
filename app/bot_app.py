@@ -1,7 +1,7 @@
 # app/bot_app.py
 from typing import cast
 from telebot import TeleBot
-from .config import TOKEN, logger
+from .config import TOKEN
 
 from .imc_handlers import iniciar_imc
 from .water_handlers import iniciar_agua
@@ -60,7 +60,6 @@ def create_bot():
 
     register_fallback(bot, iniciar_imc)
 
-    logger.info("Handlers registrados.")
     return bot
 
 
