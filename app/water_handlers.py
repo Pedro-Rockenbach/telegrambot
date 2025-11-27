@@ -1,10 +1,9 @@
 # app/water_handlers.py
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 from .keyboard import criar_menu_principal, checar_cancelamento, texto_cancelado
-from typing import Any
 
 
-def iniciar_agua(bot: Any, msg):
+def iniciar_agua(bot, msg):
     sent = bot.send_message(
         msg.chat.id,
         "Vamos calcular seu consumo diário de água.\nDigite seu peso em kg (ex: 70.5). Ou digite 'Sair'.",

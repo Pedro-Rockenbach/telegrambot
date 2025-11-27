@@ -31,8 +31,6 @@ def create_bot():
         func=lambda m: (m.text or "").strip().lower() in ("calcular tmb", "tmb"),
     )
 
-    # --- CORREÇÃO AQUI ---
-    # Adicionado "calcular pressão" e "calcular pressao" na lista
     bot.register_message_handler(
         lambda m: iniciar_pressao(bot, m),
         func=lambda m: (m.text or "").strip().lower()
@@ -49,9 +47,6 @@ def create_bot():
         func=lambda m: (m.text or "").strip().lower() == "mais informações",
     )
 
-    # --- CORREÇÃO AQUI ---
-    # Adicionado .strip().lower() para normalizar o texto
-    # Adicionado versões com acento e o texto exato do botão
     bot.register_message_handler(
         lambda m: iniciar_risco(bot, m),
         func=lambda m: (m.text or "").strip().lower()
@@ -63,7 +58,6 @@ def create_bot():
         ),
     )
 
-    # Agora registre o fallback por último
     register_fallback(bot, iniciar_imc)
 
     logger.info("Handlers registrados.")

@@ -93,14 +93,15 @@ def pegar_altura(message: Any, bot: Any, peso: float):
         f"Altura: {altura:.2f} m\n"
         f"IMC: {imc:.2f}\n"
         f"Classificação: {categoria}\n\n"
-        "Legenda (WHO):\n"
+        "Legenda:\n"
         " - Abaixo do peso: < 18.5\n"
         " - Normal: 18.5 – 24.9\n"
         " - Sobrepeso: 25 – 29.9\n"
         " - Obesidade I: 30 – 34.9\n"
         " - Obesidade II: 35 – 39.9\n"
         " - Obesidade III: ≥ 40\n\n"
-        "Volte ao menu principal ou calcule novamente."
+        "Volte ao menu principal ou calcule novamente.\n\n"
+        "Cálculos feitos com base em parâmetros da Organização Mundial da Sáude.\n\n"
     )
 
     bot.send_message(

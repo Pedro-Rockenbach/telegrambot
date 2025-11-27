@@ -16,7 +16,6 @@ RISK_DISCLAIMER = (
 )
 
 IDADE = "Digite sua idade em anos (ex: 42): "
-# ---------- Fluxo: iniciar -> idade -> sexo -> tabagismo -> diabetes -> sbp -> colesterol -> resultado
 
 
 def sim_ou_nao():

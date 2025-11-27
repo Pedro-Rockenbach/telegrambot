@@ -3,8 +3,8 @@ from .keyboard import criar_menu_principal, texto_cancelado, checar_cancelamento
 from .config import logger
 
 BOAS_VINDAS = (
-    "Olá! Eu sou o *Hermes Bot*, seu assistente pessoal em saúde. 👋\n\n"
-    "Posso te ajudar com cálculos rápidos (ex.: IMC, TMB, Água, risco cardíaco). Use o menu abaixo para começar."
+    "Olá! Eu sou o *Hermes Bot*🤖🩺, seu assistente pessoal em saúde.\n\n"
+    "Irei te ajudar com cálculos que avaliam sua saúde de forma geral.\nUse o menu abaixo para começar."
 )
 
 DISCLAIMER = (

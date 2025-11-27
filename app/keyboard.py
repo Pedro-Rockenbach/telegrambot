@@ -14,7 +14,7 @@ def criar_menu_principal(one_time=False):
 
 
 def texto_cancelado():
-    return "Operação cancelada. Volte ao menu principal quando quiser."
+    return "Operação cancelada. Selecione uma opção do menu para continuar."
 
 
 def checar_cancelamento(text):

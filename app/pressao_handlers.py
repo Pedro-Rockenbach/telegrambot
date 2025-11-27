@@ -1,4 +1,3 @@
-from typing import Any
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 from .keyboard import criar_menu_principal, checar_cancelamento, texto_cancelado
 
@@ -34,12 +33,13 @@ INFO_PRESSAO = (
     "- Normal: entre 90/60 e 119/79\n"
     "- Limítrofe: entre 120/80 e 139/89\n"
     "- Alta: 140/90 ou mais\n\n"
+    "fonte: Organização Mundial da Saúde\n\n"
     " Este bot não substitui avaliação profissional."
 )
 
 
 # --- Handler principal ---
-def iniciar_pressao(bot: Any, msg):
+def iniciar_pressao(bot, msg):
     """
     Entrada principal do menu de pressão arterial.
     """
@@ -50,7 +50,7 @@ def iniciar_pressao(bot: Any, msg):
     )
 
 
-def iniciar_afericao(bot: Any, msg):
+def iniciar_afericao(bot, msg):
     """
     Inicia coleta da pressão: pergunta 120/80.
     """
@@ -99,7 +99,7 @@ def processar_pressao(message, bot):
         bot.register_next_step_handler(sent, processar_pressao, bot)
 
 
-def enviar_info_pressao(bot: Any, msg):
+def enviar_info_pressao(bot, msg):
     """
     Envia texto informativo sobre classificação da pressão arterial.
     """

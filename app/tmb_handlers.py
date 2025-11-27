@@ -1,10 +1,9 @@
 # app/tmb_handlers.py
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 from .keyboard import criar_menu_principal, checar_cancelamento, texto_cancelado
-from typing import Any
 
 
-def iniciar_tmb(bot: Any, msg):
+def iniciar_tmb(bot, msg):
     sent = bot.send_message(
         msg.chat.id,
         "Vamos calcular sua TMB.\nQual seu sexo? (Homem / Mulher)\nOu digite 'Sair'.",
