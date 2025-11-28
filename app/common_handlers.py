@@ -1,6 +1,7 @@
 # app/common_handlers.py
 from .keyboard import criar_menu_principal, texto_cancelado, checar_cancelamento
 from .config import logger
+from time import sleep
 
 BOAS_VINDAS = (
     "Eu sou o *Hermes Bot*🤖🩺, seu assistente pessoal em saúde.\n\n"
@@ -29,7 +30,9 @@ def register_common_handlers(bot, imc):
                 reply_markup=criar_menu_principal(False),
                 parse_mode="Markdown",
             )
+            sleep(2)
             bot.send_message(msg.chat.id, DISCLAIMER, parse_mode="Markdown")
+            sleep(1)
             bot.send_message(msg.chat.id, USO_DADOS, parse_mode="Markdown")
         except Exception as e:
             logger.exception("Erro ao enviar start/disclaimer: %s", e)
