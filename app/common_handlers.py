@@ -30,9 +30,9 @@ def register_common_handlers(bot, imc):
                 reply_markup=criar_menu_principal(False),
                 parse_mode="Markdown",
             )
-            sleep(2)
+            sleep(3)
             bot.send_message(msg.chat.id, DISCLAIMER, parse_mode="Markdown")
-            sleep(1)
+            sleep(2)
             bot.send_message(msg.chat.id, USO_DADOS, parse_mode="Markdown")
         except Exception as e:
             logger.exception("Erro ao enviar start/disclaimer: %s", e)
