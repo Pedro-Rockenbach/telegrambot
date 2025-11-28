@@ -3,7 +3,7 @@ from .keyboard import criar_menu_principal, texto_cancelado, checar_cancelamento
 from .config import logger
 
 BOAS_VINDAS = (
-    "Olá! Eu sou o *Hermes Bot*🤖🩺, seu assistente pessoal em saúde.\n\n"
+    "Eu sou o *Hermes Bot*🤖🩺, seu assistente pessoal em saúde.\n\n"
     "Irei te ajudar com cálculos que avaliam sua saúde de forma geral.\nUse o menu abaixo para começar."
 )
 
@@ -21,9 +21,11 @@ USO_DADOS = (
 def register_common_handlers(bot, imc):
     def start_handler(msg):
         try:
+            nome = msg.from_user.first_name or "Visitante"
+            mensagem_personalizada = f"Olá, *{nome}*! {BOAS_VINDAS}"
             bot.send_message(
                 msg.chat.id,
-                BOAS_VINDAS,
+                mensagem_personalizada,
                 reply_markup=criar_menu_principal(False),
                 parse_mode="Markdown",
             )
