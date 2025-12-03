@@ -7,20 +7,20 @@ UPAS_DB = {
     "veneza": {
         "nome": "UPA Veneza",
         "endereco": "R. Café Filho, 1460 - Jardim Veneza",
-        "lat": -24.982415, 
-        "lon": -53.463289
+        "lat": -24.97432, 
+        "lon": -53.41156
     },
     "tancredo": {
         "nome": "UPA Tancredo Neves",
         "endereco": "Av. Tancredo Neves, 1453 - Centro",
-        "lat": -24.965421,
-        "lon": -53.490102
+        "lat": -24.97059,
+        "lon": -53.48733
     },
     "brasilia": {
         "nome": "UPA Brasília",
         "endereco": "R. Europa, 1115 - Brasília",
-        "lat": -24.936550, 
-        "lon": -53.447810
+        "lat": -24.940575097548688,
+        "lon": -53.422554841568335 
     }
 }
 
