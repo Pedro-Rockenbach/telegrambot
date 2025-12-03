@@ -1,6 +1,6 @@
-# app/numeros_handlers.py
+# app/numeros_ha# app/numeros_handlers.py
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
-from .keyboard import criar_menu_ferramentas
+# Removemos o import não utilizado para limpar o código
 
 def menu_emergencia():
     """Cria botões que discam diretamente"""

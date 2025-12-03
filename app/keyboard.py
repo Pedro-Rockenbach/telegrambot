@@ -1,107 +1,112 @@
+# main.py
+from app.bot_app import bot
+from app.keyboard import criar_menu_inicial, criar_menu_ferramentas, texto_cancelado
+from app.common_handlers import MSG_QUEM_SOMOS, MSG_AVISOS, MSG_SAIDA
 
-# app/keyboard.py
-from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+# Imports dos handlers
+from app.imc_handlers import iniciar_imc
+from app.tmb_handlers import iniciar_tmb, callback_tmb_sexo
+from app.water_handlers import iniciar_agua
+from app.riscocard_handlers import (
+    iniciar_risco,
+    callback_risco_sexo,
+    callback_risco_fumante,
+    callback_risco_diabetes,
+)
+from app.pressao_handlers import iniciar_pressao, iniciar_afericao_manual, INFO_PRESSAO
+from app.upa_handlers import iniciar_upas, enviar_mapa_upa
+from app.numeros_handlers import iniciar_numeros
 
+@bot.callback_query_handler(func=lambda call: True)
+def callback_router(call):
+    data = call.data
+    chat_id = call.message.chat.id
 
-# --- 1. O Novo Menu Principal (Tela Inicial) ---
-def criar_menu_inicial():
-    kb = InlineKeyboardMarkup()
-    # Botão de Ação principal
-    kb.add(
-        InlineKeyboardButton("🚀 Ir para Avaliação", callback_data="abrir_ferramentas")
-    )
-    # Botões informativos
-    kb.row(
-        InlineKeyboardButton("🤖 Quem Somos", callback_data="quem_somos"),
-        InlineKeyboardButton("⚠️ Avisos Importantes", callback_data="avisos"),
-    )
-    return kb
+    # --- NAVEGAÇÃO PRINCIPAL ---
 
-
-# --- 2. O Menu de Ferramentas (Antigo Principal - Grade) ---
-def criar_menu_ferramentas():
-    kb = InlineKeyboardMarkup()
-    kb.row(
-        InlineKeyboardButton("📊 IMC", callback_data="imc"),
-        InlineKeyboardButton("💧 Água", callback_data="agua"),
-    )
-    kb.row(
-        InlineKeyboardButton("🔥 TMB", callback_data="tmb"),
-        InlineKeyboardButton("🩺 Pressão", callback_data="pressao"),
-    )
-    kb.row(
-        InlineKeyboardButton("🚑 UPAs Mapa", callback_data="upas"),
-        InlineKeyboardButton("🚨 Emergência", callback_data="numeros") # <--- NOVO
-    )
-    kb.add(InlineKeyboardButton("❤️ Risco Cardíaco", callback_data="risco"))
-    # Botão para voltar ao início
-    kb.add(InlineKeyboardButton("🔙 Voltar ao Início", callback_data="voltar_inicio"))
-    return kb
-
-
-# --- 3. Menu de Finalização (Pós-cálculo) ---
-def menu_conclusao():
-    kb = InlineKeyboardMarkup()
-    kb.row(
-        InlineKeyboardButton("🏠 Menu Principal", callback_data="voltar_inicio"),
-        InlineKeyboardButton("👋 Sair", callback_data="sair_final"),
-    )
-    return kb
-
-
-# --- Outros Menus Auxiliares (Mantidos) ---
-
-
-def menu_cancelar():
-    kb = InlineKeyboardMarkup()
-    kb.add(
-        InlineKeyboardButton(
-            "❌ Cancelar Operação", callback_data="cancelar_voltar_ferramentas"
+    if data == "voltar_inicio":
+        bot.clear_step_handler_by_chat_id(chat_id)
+        bot.edit_message_text(
+            chat_id=chat_id,
+            message_id=call.message.message_id,
+            text=f"🏠 *Menu Principal*\nEscolha uma opção:",
+            parse_mode="Markdown",
+            reply_markup=criar_menu_inicial(),
         )
-    )
-    return kb
 
+    elif data == "abrir_ferramentas":
+        bot.edit_message_text(
+            chat_id=chat_id,
+            message_id=call.message.message_id,
+            text="🛠 *Área de Avaliação*\nQual cálculo deseja realizar?",
+            parse_mode="Markdown",
+            reply_markup=criar_menu_ferramentas(),
+        )
 
-def menu_sexo(prefixo):
-    kb = InlineKeyboardMarkup()
-    kb.row(
-        InlineKeyboardButton("👨 Homem", callback_data=f"{prefixo}_sexo_m"),
-        InlineKeyboardButton("👩 Mulher", callback_data=f"{prefixo}_sexo_f"),
-    )
-    kb.add(
-        InlineKeyboardButton("❌ Cancelar", callback_data="cancelar_voltar_ferramentas")
-    )
-    return kb
+    elif data == "quem_somos":
+        bot.send_message(
+            chat_id,
+            MSG_QUEM_SOMOS,
+            parse_mode="Markdown",
+            reply_markup=criar_menu_inicial(),
+        )
 
+    elif data == "avisos":
+        bot.send_message(
+            chat_id,
+            MSG_AVISOS,
+            parse_mode="Markdown",
+            reply_markup=criar_menu_inicial(),
+        )
 
-def menu_sim_nao(prefixo, etapa):
-    kb = InlineKeyboardMarkup()
-    kb.row(
-        InlineKeyboardButton("✅ Sim", callback_data=f"{prefixo}_{etapa}_s"),
-        InlineKeyboardButton("❌ Não", callback_data=f"{prefixo}_{etapa}_n"),
-    )
-    kb.add(
-        InlineKeyboardButton("↩️ Cancelar", callback_data="cancelar_voltar_ferramentas")
-    )
-    return kb
+    elif data == "sair_final":
+        bot.clear_step_handler_by_chat_id(chat_id)
+        bot.send_message(chat_id, MSG_SAIDA, parse_mode="Markdown")
 
+    elif data == "cancelar_voltar_ferramentas":
+        bot.clear_step_handler_by_chat_id(chat_id)
+        bot.send_message(
+            chat_id, texto_cancelado(), reply_markup=criar_menu_ferramentas()
+        )
 
-def menu_pressao_inline():
-    kb = InlineKeyboardMarkup()
-    kb.add(InlineKeyboardButton("🩺 Aferir Agora", callback_data="pressao_aferir"))
-    kb.row(
-        InlineKeyboardButton("ℹ️ Info", callback_data="pressao_info"),
-        InlineKeyboardButton("🔙 Voltar", callback_data="abrir_ferramentas"),
-    )
-    return kb
+    # --- FERRAMENTAS ---
+    elif data == "imc":
+        iniciar_imc(bot, call)
+    elif data == "tmb":
+        iniciar_tmb(bot, call)
+    elif data == "agua":
+        iniciar_agua(bot, call)
+    elif data == "risco":
+        iniciar_risco(bot, call)
+    elif data == "pressao":
+        iniciar_pressao(bot, call)
+    elif data == "upas":
+        iniciar_upas(bot, call)
+    elif data == "numeros": 
+        # AQUI ESTÁ CORRETO
+        iniciar_numeros(bot, call)
 
+    # --- PRESSÃO ---
+    elif data == "pressao_aferir":
+        iniciar_afericao_manual(bot, chat_id)
+    elif data == "pressao_info":
+        bot.send_message(chat_id, INFO_PRESSAO, parse_mode="Markdown")
+        iniciar_pressao(bot, call)
 
-def texto_cancelado():
-    return "🚫 Operação cancelada."
+    # --- FLUXOS INTERNOS (TMB/RISCO/UPAS) ---
+    elif data.startswith("tmb_sexo"):
+        callback_tmb_sexo(bot, call)
+    elif data.startswith("risco_sexo"):
+        callback_risco_sexo(bot, call)
+    elif data.startswith("risco_fumante"):
+        callback_risco_fumante(bot, call)
+    elif data.startswith("risco_diabetes"):
+        callback_risco_diabetes(bot, call)
+    elif data.startswith("upa_"):
+        enviar_mapa_upa(bot, call)
 
+    bot.answer_callback_query(call.id)
 
-def checar_cancelamento(text):
-    if text is None:
-        return False
-    t = text.strip().lower()
-    return t in ("sair", "/sair", "cancel", "/cancel", "cancelar", "/cancelar")
+if __name__ == "__main__":
+    print("Bot rodando com Nova Navegação...")
+    bot.infinity_polling()"cancel", "/cancel", "cancelar", "/cancelar")
