@@ -1,271 +1,217 @@
+
 from typing import Dict
-from telebot.types import ReplyKeyboardMarkup, KeyboardButton
-from .keyboard import criar_menu_principal, texto_cancelado, checar_cancelamento
+from .keyboard import (
+    criar_menu_ferramentas,  # Substituiu criar_menu_principal
+    texto_cancelado,
+    checar_cancelamento,
+    menu_sim_nao,
+    menu_sexo,
+    menu_cancelar,
+    menu_conclusao,  # Novo menu de fim
+)
 
 RISK_INTRO = (
-    "Vamos estimar um risco cardiovascular aproximado.\n\n"
-    "Vou te fazer algumas perguntas rápidas (idade, sexo, tabagismo, diabetes, "
-    "pressão sistólica e colesterol total).\n\n\n"
-    "Digite sua idade em anos (ex: 32): "
+    "❤️ *Risco Cardíaco*\nVamos fazer uma estimativa rápida.\n\nDigite sua *idade*:"
 )
 
 RISK_DISCLAIMER = (
-    "⚠️ *Aviso*: este é um cálculo aproximado e educativo. Não substitui avaliação médica. "
-    "Se tiver dúvidas ou sintomas, procure um profissional de saúde."
+    "⚠️ *Aviso*: Este cálculo é apenas educativo e baseado em estatísticas gerais. "
+    "Não substitui exames clínicos."
 )
 
-IDADE = "Digite sua idade em anos (ex: 42): "
-
-
-def sim_ou_nao():
-    kb = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-    kb.add(KeyboardButton("Sim"))
-    kb.add(KeyboardButton("Não"))
-    kb.add(KeyboardButton("Sair"))
-    return kb
+# Cache temporário
+RISCO_CACHE = {}
 
 
 def iniciar_risco(bot, msg):
-    """Inicia o fluxo de cálculo de risco cardíaco."""
-    sent = bot.send_message(msg.chat.id, RISK_INTRO)
-    # pergunta idade no próximo passo
-    bot.register_next_step_handler(sent, pegar_idade, {}, bot)
+    chat_id = msg.message.chat.id if hasattr(msg, "message") else msg.chat.id
+    RISCO_CACHE[chat_id] = {}
 
-
-def pegar_idade(message, data: Dict, bot):
-    if checar_cancelamento(message.text):
-        bot.send_message(
-            message.chat.id, texto_cancelado(), reply_markup=criar_menu_principal(False)
-        )
-        return
-
-    txt = (message.text or "").strip()
-    try:
-        idade = int(txt)
-        if idade <= 0 or idade > 120:
-            raise ValueError
-    except Exception:
-        sent = bot.send_message(
-            message.chat.id,
-            "Idade inválida. Digite sua idade em anos (ex: 45). Ou 'Sair' para cancelar.",
-        )
-        return bot.register_next_step_handler(sent, pegar_idade, data, bot)
-
-    data["idade"] = idade
-    sent2 = bot.send_message(
-        message.chat.id,
-        "Qual seu sexo? ",
-        reply_markup=ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-        .add(KeyboardButton("Masculino"))
-        .add(KeyboardButton("Feminino"))
-        .add(KeyboardButton("Sair")),
+    sent = bot.send_message(
+        chat_id, RISK_INTRO, parse_mode="Markdown", reply_markup=menu_cancelar()
     )
-    bot.register_next_step_handler(sent2, pegar_sexo, data, bot)
+    bot.register_next_step_handler(sent, pegar_idade, bot)
 
 
-def pegar_sexo(message, data: Dict, bot):
+def pegar_idade(message, bot):
+    chat_id = message.chat.id
     if checar_cancelamento(message.text):
         bot.send_message(
-            message.chat.id, texto_cancelado(), reply_markup=criar_menu_principal(False)
+            chat_id, texto_cancelado(), reply_markup=criar_menu_ferramentas()
         )
         return
 
-    txt = (message.text or "").strip().lower()
-    if txt in ("m", "masculino", "homem"):
-        data["sexo"] = "M"
-    elif txt in ("f", "feminino", "mulher"):
-        data["sexo"] = "F"
+    try:
+        idade = int(message.text)
+        if not (10 < idade < 120):
+            raise ValueError
+    except:
+        sent = bot.send_message(
+            chat_id, "⚠️ Idade inválida. Digite novamente:", reply_markup=menu_cancelar()
+        )
+        return bot.register_next_step_handler(sent, pegar_idade, bot)
+
+    if chat_id in RISCO_CACHE:
+        RISCO_CACHE[chat_id]["idade"] = idade
+
+    # Próximo passo: Sexo (Botões)
+    bot.send_message(
+        chat_id, "Qual seu sexo biológico?", reply_markup=menu_sexo("risco")
+    )
+
+
+def callback_risco_sexo(bot, call):
+    chat_id = call.message.chat.id
+    if chat_id not in RISCO_CACHE:
+        RISCO_CACHE[chat_id] = {}
+
+    RISCO_CACHE[chat_id]["sexo"] = "M" if "sexo_m" in call.data else "F"
+
+    bot.send_message(
+        chat_id,
+        "🚬 Você fuma atualmente?",
+        reply_markup=menu_sim_nao("risco", "fumante"),
+    )
+
+
+def callback_risco_fumante(bot, call):
+    chat_id = call.message.chat.id
+    is_sim = "_s" in call.data
+    if chat_id in RISCO_CACHE:
+        RISCO_CACHE[chat_id]["fumante"] = is_sim
+
+    bot.send_message(
+        chat_id,
+        "🍬 Possui diagnóstico de diabetes?",
+        reply_markup=menu_sim_nao("risco", "diabetes"),
+    )
+
+
+def callback_risco_diabetes(bot, call):
+    chat_id = call.message.chat.id
+    is_sim = "_s" in call.data
+    if chat_id in RISCO_CACHE:
+        RISCO_CACHE[chat_id]["diabetes"] = is_sim
+
+    sent = bot.send_message(
+        chat_id,
+        "🩺 Digite sua pressão sistólica (o valor maior, ex: *120*):",
+        parse_mode="Markdown",
+        reply_markup=menu_cancelar(),
+    )
+    bot.register_next_step_handler(sent, pegar_sbp, bot)
+
+
+def pegar_sbp(message, bot):
+    chat_id = message.chat.id
+    if checar_cancelamento(message.text):
+        bot.send_message(
+            chat_id, texto_cancelado(), reply_markup=criar_menu_ferramentas()
+        )
+        return
+
+    try:
+        sbp = int(float(message.text.replace(",", ".")))
+    except:
+        sent = bot.send_message(
+            chat_id,
+            "⚠️ Valor inválido. Digite apenas o número (ex: 120):",
+            reply_markup=menu_cancelar(),
+        )
+        return bot.register_next_step_handler(sent, pegar_sbp, bot)
+
+    if chat_id in RISCO_CACHE:
+        RISCO_CACHE[chat_id]["sbp"] = sbp
+
+    sent = bot.send_message(
+        chat_id,
+        "🍔 Digite seu Colesterol Total (mg/dL) (ex: *190*):",
+        parse_mode="Markdown",
+        reply_markup=menu_cancelar(),
+    )
+    bot.register_next_step_handler(sent, pegar_chol, bot)
+
+
+def pegar_chol(message, bot):
+    chat_id = message.chat.id
+    if checar_cancelamento(message.text):
+        bot.send_message(
+            chat_id, texto_cancelado(), reply_markup=criar_menu_ferramentas()
+        )
+        return
+
+    try:
+        chol = float(message.text.replace(",", "."))
+    except:
+        sent = bot.send_message(
+            chat_id,
+            "⚠️ Inválido. Digite o colesterol (ex: 190):",
+            reply_markup=menu_cancelar(),
+        )
+        return bot.register_next_step_handler(sent, pegar_chol, bot)
+
+    if chat_id in RISCO_CACHE:
+        RISCO_CACHE[chat_id]["chol"] = chol
+        dados = RISCO_CACHE[chat_id]
     else:
-        sent = bot.send_message(
-            message.chat.id,
-            "Resposta inválida. Digite 'M' (masculino) ou 'F' (feminino). Ou 'Sair' para cancelar.",
-        )
-        return bot.register_next_step_handler(sent, pegar_sexo, data, bot)
+        dados = {}
 
-    sent2 = bot.send_message(
-        message.chat.id,
-        "Você é fumante atualmente? (Sim/Não)",
-        reply_markup=sim_ou_nao(),
-    )
-    bot.register_next_step_handler(sent2, pegar_tabagismo, data, bot)
+    resultado_texto = _calcular_risco(dados)
 
+    # Formatação final bonita
+    mensagem_final = f"{resultado_texto}\n\n{RISK_DISCLAIMER}\n━━━━━━━━━━━━━━━━━━━━"
 
-def pegar_tabagismo(message, data: Dict, bot):
-    if checar_cancelamento(message.text):
-        bot.send_message(
-            message.chat.id, texto_cancelado(), reply_markup=criar_menu_principal(False)
-        )
-        return
-
-    txt = (message.text or "").strip().lower()
-    data["fumante"] = txt in ("sim", "s", "yes", "y")
-    sent2 = bot.send_message(
-        message.chat.id,
-        "Tem diagnóstico de diabetes? (Sim/Não)",
-        reply_markup=sim_ou_nao(),
-    )
-    bot.register_next_step_handler(sent2, pegar_diabetes, data, bot)
-
-
-def pegar_diabetes(message, data: Dict, bot):
-    if checar_cancelamento(message.text):
-        bot.send_message(
-            message.chat.id, texto_cancelado(), reply_markup=criar_menu_principal(False)
-        )
-        return
-
-    txt = (message.text or "").strip().lower()
-    data["diabetes"] = txt in ("sim", "s", "yes", "y")
-    sent2 = bot.send_message(
-        message.chat.id,
-        "Digite sua pressão arterial sistólica (ex: 120)",
-        reply_markup=ReplyKeyboardMarkup(
-            resize_keyboard=True, one_time_keyboard=True
-        ).add(KeyboardButton("Sair")),
-    )
-    bot.register_next_step_handler(sent2, pegar_sbp, data, bot)
-
-
-def pegar_sbp(message, data: Dict, bot):
-    if checar_cancelamento(message.text):
-        bot.send_message(
-            message.chat.id, texto_cancelado(), reply_markup=criar_menu_principal(False)
-        )
-        return
-
-    txt = (message.text or "").strip().replace(",", ".")
-    try:
-        sbp = int(float(txt))
-        if sbp <= 50 or sbp >= 300:
-            raise ValueError
-    except Exception:
-        sent = bot.send_message(
-            message.chat.id,
-            "Pressão inválida. Digite a pressão sistólica em mmHg (ex: 120). Ou 'Sair' para cancelar.",
-        )
-        return bot.register_next_step_handler(sent, pegar_sbp, data, bot)
-
-    data["sbp"] = sbp
-    sent2 = bot.send_message(
-        message.chat.id,
-        "Digite o colesterol total em mg/dL (ex: 190).",
-        reply_markup=ReplyKeyboardMarkup(
-            resize_keyboard=True, one_time_keyboard=True
-        ).add(KeyboardButton("Sair")),
-    )
-    bot.register_next_step_handler(sent2, pegar_chol, data, bot)
-
-
-def pegar_chol(message, data: Dict, bot):
-    if checar_cancelamento(message.text):
-        bot.send_message(
-            message.chat.id, texto_cancelado(), reply_markup=criar_menu_principal(False)
-        )
-        return
-
-    txt = (message.text or "").strip().replace(",", ".")
-    try:
-        chol = float(txt)
-        if chol <= 50 or chol >= 1000:
-            raise ValueError
-    except Exception:
-        sent = bot.send_message(
-            message.chat.id,
-            "Colesterol inválido. Digite o colesterol total em mg/dL (ex: 190). Ou 'Sair' para cancelar.",
-        )
-        return bot.register_next_step_handler(sent, pegar_chol, data, bot)
-
-    data["chol"] = chol
-    resultado = _calcular_risco(data)
     bot.send_message(
-        message.chat.id, resultado + "\n\n" + RISK_DISCLAIMER, parse_mode="Markdown"
+        chat_id, mensagem_final, parse_mode="Markdown", reply_markup=menu_conclusao()
     )
-    bot.send_message(
-        message.chat.id,
-        "Volte ao menu principal:",
-        reply_markup=criar_menu_principal(False),
-    )
+
+    # Limpa memória
+    if chat_id in RISCO_CACHE:
+        del RISCO_CACHE[chat_id]
 
 
 def _calcular_risco(data: Dict) -> str:
-    """
-    Estimativa heurística simplificada — educational only.
-    Pontos baseados em faixas de idade, sexo, tabagismo, diabetes, PAS, colesterol.
-    Mapeamento final converte pontos para classificação percentual aproximada.
-    """
-    idade = data.get("idade", 0)
+    # Lógica simplificada de pontos (WHO/ISH adaptada para exemplo)
+    idade = data.get("idade", 30)
     sexo = data.get("sexo", "M")
     fumante = data.get("fumante", False)
     diabetes = data.get("diabetes", False)
-    sbp = data.get("sbp", 0)
-    chol = data.get("chol", 0.0)
+    sbp = data.get("sbp", 120)
 
     points = 0
 
-    # idade
-    if idade < 40:
-        points += 0
-    elif 40 <= idade < 50:
-        points += 5
-    elif 50 <= idade < 60:
-        points += 8
-    elif 60 <= idade < 70:
-        points += 10
-    else:
-        points += 12
+    if idade >= 40:
+        points += 1
+    if idade >= 50:
+        points += 1
+    if idade >= 60:
+        points += 1
 
-    # sexo
     if sexo == "M":
-        points += 3
-
-    # tabagismo
+        points += 1
     if fumante:
-        points += 4
-
-    # diabetes
+        points += 2
     if diabetes:
-        points += 5
-
-    # pressão sistólica
-    if sbp < 120:
-        points += 0
-    elif 120 <= sbp < 140:
         points += 2
-    elif 140 <= sbp < 160:
-        points += 4
-    else:
-        points += 6
+    if sbp >= 140:
+        points += 1
+    if sbp >= 160:
+        points += 1
 
-    # colesterol total (mg/dL)
-    if chol < 200:
-        points += 0
-    elif 200 <= chol < 240:
-        points += 2
-    elif 240 <= chol < 280:
-        points += 4
+    # Classificação visual
+    if points <= 2:
+        nivel = "🟢 BAIXO (<10%)"
+    elif 3 <= points <= 5:
+        nivel = "🟡 MODERADO (10-20%)"
     else:
-        points += 6
+        nivel = "🔴 ALTO (>20%)"
 
-    # mapear pontos para risco aproximado (apenas indicativo)
-    if points <= 4:
-        risk_pct = "<5%"
-        category = "Baixo risco"
-    elif 5 <= points <= 9:
-        risk_pct = "≈5-10%"
-        category = "Risco moderado"
-    elif 10 <= points <= 14:
-        risk_pct = "≈10-20%"
-        category = "Risco alto"
-    else:
-        risk_pct = ">20%"
-        category = "Risco muito alto"
-
-    resumo = (
-        f"*Estimativa de risco cardíaco*\n\n"
-        f"Categoria: *{category}*\n"
-        f"Estimativa: *{risk_pct}* (apenas indicativa)\n\n"
-        f"_Pontos totais_: {points}\n\n"
-        "Fatores considerados: idade, sexo, tabagismo, diabetes, pressão sistólica e colesterol total.\n\n"
-        "Fonte: Organização Mundial da Saúde (OMS) (Lancet, 2019)."
+    return (
+        f"❤️ *ESTIMATIVA DE RISCO*\n"
+        f"━━━━━━━━━━━━━━━━━━━━\n\n"
+        f"👤 *Perfil:* {sexo}, {idade} anos\n"
+        f"🚬 *Fumante:* {'Sim' if fumante else 'Não'}\n"
+        f"🍬 *Diabetes:* {'Sim' if diabetes else 'Não'}\n"
+        f"🩺 *Pressão:* {sbp} mmHg\n\n"
+        f"📊 *Resultado:* {nivel}"
     )
-    return resumo

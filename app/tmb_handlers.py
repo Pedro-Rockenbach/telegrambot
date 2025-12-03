@@ -1,106 +1,112 @@
+
 # app/tmb_handlers.py
-from telebot.types import ReplyKeyboardMarkup, KeyboardButton
-from .keyboard import criar_menu_principal, checar_cancelamento, texto_cancelado
+from .keyboard import (
+    criar_menu_ferramentas,
+    checar_cancelamento,
+    texto_cancelado,
+    menu_sexo,
+    menu_cancelar,
+    menu_conclusao,
+)
+
+TMB_CACHE = {}
 
 
 def iniciar_tmb(bot, msg):
-    sent = bot.send_message(
-        msg.chat.id,
-        "Vamos calcular sua TMB.\nQual seu sexo? (Homem / Mulher)\nOu digite 'Sair'.",
-        reply_markup=ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-        .add(KeyboardButton("Homem"))
-        .add(KeyboardButton("Mulher"))
-        .add(KeyboardButton("Sair")),
+    chat_id = msg.message.chat.id if hasattr(msg, "message") else msg.chat.id
+    TMB_CACHE[chat_id] = {}
+    bot.send_message(
+        chat_id,
+        "🔥 *Cálculo TMB*\n\nPrimeiro, qual seu sexo biológico?",
+        parse_mode="Markdown",
+        reply_markup=menu_sexo("tmb"),
     )
-    bot.register_next_step_handler(sent, pegar_sexo_tmb, bot)
 
 
-def pegar_sexo_tmb(message, bot):
+def callback_tmb_sexo(bot, call):
+    chat_id = call.message.chat.id
+    sexo = "h" if "sexo_m" in call.data else "m"
+    TMB_CACHE[chat_id] = {"sexo": sexo}
+    sent = bot.send_message(
+        chat_id,
+        "Digite seu *peso* em kg:",
+        parse_mode="Markdown",
+        reply_markup=menu_cancelar(),
+    )
+    bot.register_next_step_handler(sent, pegar_peso_tmb, bot)
+
+
+def pegar_peso_tmb(message, bot):
+    chat_id = message.chat.id
     if checar_cancelamento(message.text):
         bot.send_message(
-            message.chat.id, texto_cancelado(), reply_markup=criar_menu_principal(False)
+            chat_id, texto_cancelado(), reply_markup=criar_menu_ferramentas()
         )
         return
-
-    sexo = (message.text or "").strip().lower()
-    if not sexo or (not sexo.startswith("h") and not sexo.startswith("m")):
-        sent = bot.send_message(
-            message.chat.id,
-            "Digite apenas 'Homem' ou 'Mulher'. Ou 'Sair' para cancelar.",
-        )
-        return bot.register_next_step_handler(sent, pegar_sexo_tmb, bot)
-
-    sexo_norm = "h" if sexo.startswith("h") else "m"
-    sent = bot.send_message(message.chat.id, "Digite seu peso em kg (ex: 70.5).")
-    bot.register_next_step_handler(sent, pegar_peso_tmb, bot, sexo_norm)
-
-
-def pegar_peso_tmb(message, bot, sexo):
-    if checar_cancelamento(message.text):
-        bot.send_message(
-            message.chat.id, texto_cancelado(), reply_markup=criar_menu_principal(False)
-        )
-        return
-
-    txt = (message.text or "").replace(",", ".").strip()
     try:
-        peso = float(txt)
-        if peso <= 0:
-            raise ValueError
-    except Exception:
+        peso = float(message.text.replace(",", "."))
+        if chat_id in TMB_CACHE:
+            TMB_CACHE[chat_id]["peso"] = peso
+    except:
         sent = bot.send_message(
-            message.chat.id,
-            "Peso inválido. Tente novamente (ex: 70.5) ou 'Sair' para cancelar.",
+            chat_id, "Peso inválido. Tente novamente:", reply_markup=menu_cancelar()
         )
-        return bot.register_next_step_handler(sent, pegar_peso_tmb, bot, sexo)
+        return bot.register_next_step_handler(sent, pegar_peso_tmb, bot)
 
-    sent = bot.send_message(message.chat.id, "Digite sua altura em cm (ex: 175).")
-    bot.register_next_step_handler(sent, pegar_altura_tmb, bot, sexo, peso)
+    sent = bot.send_message(
+        chat_id,
+        "Digite sua *altura* em cm (ex: 175):",
+        parse_mode="Markdown",
+        reply_markup=menu_cancelar(),
+    )
+    bot.register_next_step_handler(sent, pegar_altura_tmb, bot)
 
 
-def pegar_altura_tmb(message, bot, sexo, peso):
+def pegar_altura_tmb(message, bot):
+    chat_id = message.chat.id
     if checar_cancelamento(message.text):
         bot.send_message(
-            message.chat.id, texto_cancelado(), reply_markup=criar_menu_principal(False)
+            chat_id, texto_cancelado(), reply_markup=criar_menu_ferramentas()
         )
         return
-
-    txt = (message.text or "").replace(",", ".").strip()
     try:
-        altura = float(txt)
-        if altura <= 0:
-            raise ValueError
-    except Exception:
+        altura = float(message.text.replace(",", "."))
+        if chat_id in TMB_CACHE:
+            TMB_CACHE[chat_id]["altura"] = altura
+    except:
         sent = bot.send_message(
-            message.chat.id,
-            "Altura inválida. Tente novamente (ex: 175) ou 'Sair' para cancelar.",
+            chat_id, "Altura inválida. Tente novamente:", reply_markup=menu_cancelar()
         )
-        return bot.register_next_step_handler(sent, pegar_altura_tmb, bot, sexo, peso)
+        return bot.register_next_step_handler(sent, pegar_altura_tmb, bot)
 
-    sent = bot.send_message(message.chat.id, "Digite sua idade (ex: 25) : ")
-    bot.register_next_step_handler(sent, calcular_tmb_final, bot, sexo, peso, altura)
+    sent = bot.send_message(
+        chat_id,
+        "Digite sua *idade*:",
+        parse_mode="Markdown",
+        reply_markup=menu_cancelar(),
+    )
+    bot.register_next_step_handler(sent, calcular_final, bot)
 
 
-def calcular_tmb_final(message, bot, sexo, peso, altura):
+def calcular_final(message, bot):
+    chat_id = message.chat.id
     if checar_cancelamento(message.text):
         bot.send_message(
-            message.chat.id, texto_cancelado(), reply_markup=criar_menu_principal(False)
+            chat_id, texto_cancelado(), reply_markup=criar_menu_ferramentas()
         )
         return
-
-    txt = (message.text or "").strip()
     try:
-        idade = int(txt)
-        if idade <= 0 or idade > 130:
-            raise ValueError
-    except Exception:
+        idade = int(message.text)
+    except:
         sent = bot.send_message(
-            message.chat.id,
-            "Idade inválida. Tente novamente (ex: 30) ou 'Sair' para cancelar.",
+            chat_id, "Idade inválida. Tente novamente:", reply_markup=menu_cancelar()
         )
-        return bot.register_next_step_handler(
-            sent, calcular_tmb_final, bot, sexo, peso, altura
-        )
+        return bot.register_next_step_handler(sent, calcular_final, bot)
+
+    data = TMB_CACHE.get(chat_id, {})
+    peso = data.get("peso", 70)
+    altura = data.get("altura", 170)
+    sexo = data.get("sexo", "m")
 
     if sexo == "h":
         tmb = 10 * peso + 6.25 * altura - 5 * idade + 5
@@ -109,19 +115,14 @@ def calcular_tmb_final(message, bot, sexo, peso, altura):
         tmb = 10 * peso + 6.25 * altura - 5 * idade - 161
         sexo_text = "Mulher"
 
-    texto = (
-        f"Resultado da TMB:\n\n"
-        f"Sexo: {sexo_text}\n"
-        f"Peso: {peso:.1f} kg\n"
-        f"Altura: {altura:.0f} cm\n"
-        f"Idade: {idade} anos\n\n"
-        f"➡️ TMB estimada: *{tmb:.2f} kcal/dia*\n\n"
-        "Volte ao menu para mais opções."
-    )
-
     bot.send_message(
-        message.chat.id,
-        texto,
+        chat_id,
+        f"🔥 *RESULTADO TMB*\n━━━━━━━━━━━━━━━━━━━━\n\n"
+        f"Dados: {sexo_text}, {peso}kg, {altura:.0f}cm, {idade} anos\n"
+        f"➡️ Gasto Basal: *{tmb:.0f} kcal/dia*\n\n"
+        f"━━━━━━━━━━━━━━━━━━━━",
         parse_mode="Markdown",
-        reply_markup=criar_menu_principal(False),
+        reply_markup=menu_conclusao(),
     )
+    if chat_id in TMB_CACHE:
+        del TMB_CACHE[chat_id]

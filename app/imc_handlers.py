@@ -2,13 +2,6 @@
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 from .keyboard import criar_menu_principal, texto_cancelado, checar_cancelamento
 
-
-def _sair_markup():
-    return ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(
-        KeyboardButton("Sair")
-    )
-
-
 def classificar_imc(imc: float) -> str:
     if imc < 18.5:
         return "Abaixo do peso"
