@@ -1,41 +1,41 @@
-
-# app/pressao_handlers.py
 from .keyboard import (
-    criar_menu_ferramentas,
-    checar_cancelamento,
-    texto_cancelado,
-    menu_pressao_inline,
+    criar_menu_ferramentas, 
+    checar_cancelamento, 
+    texto_cancelado, 
+    menu_pressao_inline, 
     menu_cancelar,
-    menu_conclusao,
+    menu_conclusao
 )
 
-
+# --- Classificação da pressão ---
 def classificar_pressao(sistolica: int, diastolica: int) -> str:
     if sistolica < 90 or diastolica < 60:
-        return "Pressão BAIXA"
+        return "Pressão BAIXA (Hipotensão)"
     if 90 <= sistolica <= 119 and 60 <= diastolica <= 79:
         return "Pressão NORMAL"
     if 120 <= sistolica <= 139 or 80 <= diastolica <= 89:
-        return "Pré-hipertensão"
+        return "Pressão LIMÍTROFE (Pré-hipertensão)"
     if sistolica >= 140 or diastolica >= 90:
-        return "ALTA (Hipertensão)"
-    return "Indeterminada"
+        return "Pressão ALTA (Hipertensão)"
 
+    return "Indeterminada"
 
 INFO_PRESSAO = (
     "📚 *Informações sobre Pressão Arterial*\n\n"
     "Valores de referência (OMS):\n"
     "🟢 Normal: < 120/80\n"
     "🟡 Limítrofe: 120-139 / 80-89\n"
-    "🔴 Alta: ≥ 140/90"
+    "🔴 Alta: ≥ 140/90\n\n"
+    "⚠️ _Este bot não substitui um médico._"
 )
 
 
+# --- Handler principal ---
 def iniciar_pressao(bot, msg):
-    chat_id = msg.message.chat.id if hasattr(msg, "message") else msg.chat.id
+    chat_id = msg.message.chat.id if hasattr(msg, 'message') else msg.chat.id
     bot.send_message(
         chat_id,
-        "🩺 *Menu Pressão Arterial*",
+        "🩺 *Menu Pressão Arterial*\nO que você deseja fazer?",
         parse_mode="Markdown",
         reply_markup=menu_pressao_inline(),
     )
@@ -43,10 +43,10 @@ def iniciar_pressao(bot, msg):
 
 def iniciar_afericao_manual(bot, chat_id):
     sent = bot.send_message(
-        chat_id,
-        "Digite sua pressão (*ex: 120/80*):",
+        chat_id, 
+        "Digite sua pressão no formato *120/80*:", 
         parse_mode="Markdown",
-        reply_markup=menu_cancelar(),
+        reply_markup=menu_cancelar()
     )
     bot.register_next_step_handler(sent, processar_pressao, bot)
 
@@ -62,15 +62,18 @@ def processar_pressao(message, bot):
         valor = message.text.replace(" ", "").replace(".", "").replace(",", "")
         if "/" not in valor:
             raise ValueError
+        
         sistolica, diastolica = map(int, valor.split("/"))
         resultado = classificar_pressao(sistolica, diastolica)
 
         resposta = (
-            "📋 *RESULTADO PRESSÃO*\n━━━━━━━━━━━━━━━━━━━━\n\n"
-            f"Medida: *{sistolica} / {diastolica}*\n"
-            f"➡️ Classificação: *{resultado}*\n\n"
-            "━━━━━━━━━━━━━━━━━━━━"
+            "📋 *Resultado da Pressão*\n\n"
+            f"Sistólica: {sistolica}\n"
+            f"Diastólica: {diastolica}\n\n"
+            f"➡️ *Classificação*: {resultado}\n\n"
+            "⚠️ Consulte um profissional se houver sintomas."
         )
+
         bot.send_message(
             message.chat.id,
             resposta,
@@ -81,8 +84,8 @@ def processar_pressao(message, bot):
     except Exception:
         sent = bot.send_message(
             message.chat.id,
-            "⚠️ Formato inválido! Tente *120/80*:",
+            "⚠️ Formato inválido! Envie no formato *120/80* (ex: 12 por 8).",
             parse_mode="Markdown",
-            reply_markup=menu_cancelar(),
+            reply_markup=menu_cancelar()
         )
         bot.register_next_step_handler(sent, processar_pressao, bot)

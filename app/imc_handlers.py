@@ -1,3 +1,4 @@
+
 # app/imc_handlers.py
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 from .keyboard import criar_menu_principal, texto_cancelado, checar_cancelamento
