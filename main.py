@@ -14,7 +14,7 @@ from app.riscocard_handlers import (
     callback_risco_diabetes,
 )
 from app.pressao_handlers import iniciar_pressao, iniciar_afericao_manual, INFO_PRESSAO
-
+from app.numeros_handlers import iniciar_numeros
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_router(call):
@@ -87,6 +87,10 @@ def callback_router(call):
     elif data == "pressao_info":
         bot.send_message(chat_id, INFO_PRESSAO, parse_mode="Markdown")
         iniciar_pressao(bot, call)
+    elif data == "upas":
+        iniciar_upas(bot, call)
+    elif data == "numeros": # <--- NOVO HANDLER
+        iniciar_numeros(bot, call)
 
     # --- FLUXOS INTERNOS (TMB/RISCO) ---
     elif data.startswith("tmb_sexo"):
@@ -97,6 +101,8 @@ def callback_router(call):
         callback_risco_fumante(bot, call)
     elif data.startswith("risco_diabetes"):
         callback_risco_diabetes(bot, call)
+    elif data.startswith("upa_"): # Captura upa_veneza, upa_tancredo, etc.
+        enviar_mapa_upa(bot, call)
 
     bot.answer_callback_query(call.id)
 

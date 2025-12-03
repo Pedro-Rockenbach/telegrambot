@@ -29,6 +29,10 @@ def criar_menu_ferramentas():
         InlineKeyboardButton("🔥 TMB", callback_data="tmb"),
         InlineKeyboardButton("🩺 Pressão", callback_data="pressao"),
     )
+    kb.row(
+        InlineKeyboardButton("🚑 UPAs Mapa", callback_data="upas"),
+        InlineKeyboardButton("🚨 Emergência", callback_data="numeros") # <--- NOVO
+    )
     kb.add(InlineKeyboardButton("❤️ Risco Cardíaco", callback_data="risco"))
     # Botão para voltar ao início
     kb.add(InlineKeyboardButton("🔙 Voltar ao Início", callback_data="voltar_inicio"))
