@@ -24,16 +24,12 @@ def menu_emergencia():
     return kb
 
 def iniciar_numeros(bot, call):
-    """
-    Função chamada pelo main.py.
-    Recebe 'call' (o clique do botão) ou 'msg' (comando de texto).
-    """
-    # Verifica se veio de um botão (CallbackQuery) ou mensagem de texto (Message)
+    """Função chamada pelo main.py quando clica no botão"""
+    # Se veio pelo botão (call), pegamos os dados de dentro da mensagem
     if hasattr(call, 'message'):
         chat_id = call.message.chat.id
         message_id = call.message.message_id
         
-        # Edita a mensagem anterior para não encher a tela
         bot.edit_message_text(
             chat_id=chat_id,
             message_id=message_id,
@@ -41,8 +37,8 @@ def iniciar_numeros(bot, call):
             parse_mode="Markdown",
             reply_markup=menu_emergencia()
         )
+    # Se veio por texto (msg), respondemos normal
     else:
-        # Se foi chamado por comando de texto (/emergencia)
         bot.send_message(
             call.chat.id,
             "🚨 *Números de Emergência*\n\nToque em um botão para ligar:",
