@@ -4,7 +4,8 @@ from .keyboard import (
     texto_cancelado, 
     checar_cancelamento, 
     menu_cancelar, 
-    menu_conclusao
+    menu_conclusao,
+    menu_imc_inline
 )
 
 def classificar_imc(imc: float) -> str:
@@ -28,12 +29,24 @@ def iniciar_imc(bot, msg):
     
     sent = bot.send_message(
         chat_id,
-        "⚖️ *Cálculo de IMC*\n\nDigite seu peso em *kg* (ex: 70.5):",
+        "⚖️ *Índice de Massa Corporal*\n\n O IMC é um cálculo que relaciona o peso e a altura de uma pessoa, ajudando-a avaliar seu peso ideal.\n"
+        "Para avaliar seu IMC, clique em 'Cálcular IMC' logo abaixo:\n\n",
         parse_mode="Markdown",
-        reply_markup=menu_cancelar(),
+        reply_markup=menu_imc_inline(),
+    )
+    bot.register_next_step_handler(sent, processar_imc, bot) # esse aqui vai em outro
+
+def iniciar_calculo_imc_manual(bot, chat_id):
+    sent = bot.send_message(
+        chat_id, 
+        "Digite seu peso em *kg* (ex: 70.5):", 
+        parse_mode="Markdown",
+        reply_markup=menu_cancelar()
     )
     bot.register_next_step_handler(sent, pegar_peso, bot)
 
+
+    
 def pegar_peso(message, bot):
     if checar_cancelamento(message.text):
         bot.send_message(message.chat.id, texto_cancelado(), reply_markup=criar_menu_ferramentas())

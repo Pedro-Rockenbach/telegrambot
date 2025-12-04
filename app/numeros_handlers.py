@@ -13,7 +13,6 @@ def iniciar_numeros(bot, call):
     # Texto formatado para facilitar o clique no celular
     texto_emergencia = (
         "🚨 *NÚMEROS DE EMERGÊNCIA*\n"
-        "🚨 Números emergenciais!\n\n"
         "🚓 Polícia - 190\n\n"
         "🚑 Ambulância / SAMU - 192\n\n"
         "🚒 Bombeiros - 193\n\n"

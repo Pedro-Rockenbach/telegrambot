@@ -92,6 +92,11 @@ def menu_pressao_inline():
     )
     return kb
 
+def menu_imc_inline():
+    kb = InlineKeyboardMarkup()
+    kb.add(InlineKeyboardButton("🧮 Calcular IMC", callback_data="imc_calcular"))
+    kb.add(InlineKeyboardButton("🔙 Voltar", callback_data="abrir_ferramentas"))
+    return kb
 
 def texto_cancelado():
     return "🚫 Operação cancelada."
