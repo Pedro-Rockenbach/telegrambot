@@ -108,7 +108,7 @@ def pegar_altura(message, bot, peso):
     
     bot.send_message(message.chat.id, resposta, parse_mode="Markdown")
 
-    sleep(3)
+    sleep(2)
 
     resposta2 = (
         f"━━━━━━━━ ⚠ atenção ━━━━━━━━━━━━\n" 

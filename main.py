@@ -33,16 +33,17 @@ def callback_router(call):
         bot.edit_message_text(
             chat_id=chat_id,
             message_id=call.message.message_id,
-            text=f"🏠 *Menu Principal*\nEscolha uma opção:",
+            text=f"🏠 *Menu Principal*\n\nEscolha uma opção:",
             parse_mode="Markdown",
             reply_markup=criar_menu_inicial(),
         )
 
     elif data == "abrir_ferramentas":
+        bot.clear_step_handler_by_chat_id(chat_id) 
         bot.edit_message_text(
             chat_id=chat_id,
             message_id=call.message.message_id,
-            text="🛠 *Área de Avaliação*\nQual cálculo deseja realizar?",
+            text="🩻 *Área de Avaliação*\n\nQual cálculo deseja realizar?",
             parse_mode="Markdown",
             reply_markup=criar_menu_ferramentas(),
         )

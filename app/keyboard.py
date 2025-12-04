@@ -6,7 +6,7 @@ def criar_menu_inicial():
     kb = InlineKeyboardMarkup()
     # Botão de Ação principal
     kb.add(
-        InlineKeyboardButton("🚀 Ir para Avaliação", callback_data="abrir_ferramentas")
+        InlineKeyboardButton("🪪 Ir para Avaliação", callback_data="abrir_ferramentas")
     )
     # Botões informativos
     kb.row(

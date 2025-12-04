@@ -34,7 +34,7 @@ def iniciar_pressao(bot, msg):
     chat_id = msg.message.chat.id if hasattr(msg, 'message') else msg.chat.id
     bot.send_message(
         chat_id,
-        "🩺 *Menu Pressão Arterial*\nO que você deseja fazer?",
+        "🩺 *Menu Pressão Arterial*\n\nO que você deseja fazer?",
         parse_mode="Markdown",
         reply_markup=menu_pressao_inline(),
     )
@@ -83,7 +83,7 @@ def processar_pressao(message, bot):
     except Exception:
         sent = bot.send_message(
             message.chat.id,
-            "⚠️ Formato inválido! Envie no formato *120/80* (ex: 12 por 8).",
+            "⚠️ Formato inválido! Envie no formato *120/80*.",
             parse_mode="Markdown",
             reply_markup=menu_cancelar()
         )
