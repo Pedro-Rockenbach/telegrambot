@@ -1,10 +1,7 @@
-
-# app/bot_app.p# app/bot_app.py
 from typing import cast
 from telebot import TeleBot
 from .config import TOKEN
 
-# Importações atualizadas
 from .imc_handlers import iniciar_imc
 from .water_handlers import iniciar_agua
 from .tmb_handlers import iniciar_tmb

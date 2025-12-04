@@ -3,7 +3,6 @@ from app.bot_app import bot
 from app.keyboard import criar_menu_inicial, criar_menu_ferramentas, texto_cancelado
 from app.common_handlers import MSG_QUEM_SOMOS, MSG_AVISOS, MSG_SAIDA
 
-# Imports dos handlers
 from app.imc_handlers import iniciar_imc
 from app.tmb_handlers import iniciar_tmb, callback_tmb_sexo
 from app.water_handlers import iniciar_agua
@@ -22,7 +21,6 @@ def callback_router(call):
     data = call.data
     chat_id = call.message.chat.id
 
-    # --- NAVEGAÇÃO PRINCIPAL ---
 
     if data == "voltar_inicio":
         bot.clear_step_handler_by_chat_id(chat_id)
@@ -35,7 +33,6 @@ def callback_router(call):
         )
 
     elif data == "abrir_ferramentas":
-        # Substitui o menu inicial pelo menu de ferramentas (cálculos)
         bot.edit_message_text(
             chat_id=chat_id,
             message_id=call.message.message_id,
