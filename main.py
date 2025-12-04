@@ -1,6 +1,12 @@
 # main.py
 from app.bot_app import bot
-from app.keyboard import criar_menu_inicial, criar_menu_ferramentas, texto_cancelado
+# Importamos o novo menu aqui (menu_emergencia_secundario)
+from app.keyboard import (
+    criar_menu_inicial, 
+    criar_menu_ferramentas, 
+    texto_cancelado, 
+    menu_emergencia_secundario
+)
 from app.common_handlers import MSG_QUEM_SOMOS, MSG_AVISOS, MSG_SAIDA, MSG_SOBRE_HERMES
 
 from app.imc_handlers import iniciar_imc, iniciar_calculo_imc_manual
@@ -21,7 +27,7 @@ def callback_router(call):
     data = call.data
     chat_id = call.message.chat.id
 
-
+    # --- NAVEGAÇÃO ---
     if data == "voltar_inicio":
         bot.clear_step_handler_by_chat_id(chat_id)
         bot.edit_message_text(
@@ -40,6 +46,17 @@ def callback_router(call):
             parse_mode="Markdown",
             reply_markup=criar_menu_ferramentas(),
         )
+    
+    # --- NOVO BLOCO: SUBMENU DE EMERGÊNCIA ---
+    elif data == "abrir_emergencia_menu":
+        bot.edit_message_text(
+            chat_id=chat_id,
+            message_id=call.message.message_id,
+            text="🚨 *Central de Emergência*\n\nSelecione o tipo de ajuda:",
+            parse_mode="Markdown",
+            reply_markup=menu_emergencia_secundario(),
+        )
+    # -----------------------------------------
 
     elif data == "quem_somos":
         bot.send_message(
@@ -83,10 +100,13 @@ def callback_router(call):
         iniciar_risco(bot, call)
     elif data == "pressao":
         iniciar_pressao(bot, call)
+        
+    # Estes dois agora são chamados a partir do submenu, mas o código é o mesmo
     elif data == "upas":
         iniciar_upas(bot, call)
-    elif data == "numeros": # <--- NOVO HANDLER
+    elif data == "numeros": 
         iniciar_numeros(bot, call)
+        
     # --- PRESSÃO ---
     elif data == "pressao_aferir":
         iniciar_afericao_manual(bot, chat_id)
@@ -94,9 +114,10 @@ def callback_router(call):
         bot.send_message(chat_id, INFO_PRESSAO, parse_mode="Markdown")
         iniciar_pressao(bot, call)
 
-    #menu secundario do imc
+    # --- IMC SECUNDÁRIO ---
     elif data == "imc_calcular":
         iniciar_calculo_imc_manual(bot, chat_id)
+        
     # --- FLUXOS INTERNOS (TMB/RISCO) ---
     elif data.startswith("tmb_sexo"):
         callback_tmb_sexo(bot, call)
@@ -106,7 +127,7 @@ def callback_router(call):
         callback_risco_fumante(bot, call)
     elif data.startswith("risco_diabetes"):
         callback_risco_diabetes(bot, call)
-    elif data.startswith("upa_"): # Captura upa_veneza, upa_tancredo, etc.
+    elif data.startswith("upa_"): 
         enviar_mapa_upa(bot, call)
 
     bot.answer_callback_query(call.id)

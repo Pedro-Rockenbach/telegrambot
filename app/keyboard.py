@@ -30,12 +30,22 @@ def criar_menu_ferramentas():
         InlineKeyboardButton("🩺 Pressão", callback_data="pressao"),
     )
     kb.row(
-        InlineKeyboardButton("🚑 UPAs Mapa", callback_data="upas"),
-        InlineKeyboardButton("🚨 Emergência", callback_data="numeros") # <--- NOVO
-    )
-    kb.add(InlineKeyboardButton("❤️ Risco Cardíaco", callback_data="risco"))
+        InlineKeyboardButton("❤️ Risco Cardíaco", callback_data="risco"))
+        InlineKeyboardButton("🚨 Emergência", callback_data="abrir_emergencia_menu")
     # Botão para voltar ao início
     kb.add(InlineKeyboardButton("🔙 Voltar ao Início", callback_data="voltar_inicio"))
+    return kb
+
+def menu_emergencia_secundario():
+    """Novo Submenu específico para Emergências"""
+    kb = InlineKeyboardMarkup()
+    
+    kb.add(InlineKeyboardButton("🚑 Mapa de UPAs (GPS)", callback_data="upas"))
+    kb.add(InlineKeyboardButton("📞 Números Úteis", callback_data="numeros"))
+    
+    # Voltar para o menu de ferramentas (nível anterior)
+    kb.add(InlineKeyboardButton("🔙 Voltar", callback_data="abrir_ferramentas"))
+    
     return kb
 
 def menu_conclusao():
