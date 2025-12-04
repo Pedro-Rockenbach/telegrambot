@@ -8,6 +8,8 @@ from .keyboard import (
     menu_imc_inline
 )
 
+from time import sleep
+
 def classificar_imc(imc: float) -> str:
     if imc < 18.5: return "Abaixo do peso"
     if 18.5 <= imc < 25: return "Peso normal"
@@ -30,16 +32,15 @@ def iniciar_imc(bot, msg):
     sent = bot.send_message(
         chat_id,
         "⚖️ *Índice de Massa Corporal*\n\n O IMC é um cálculo que relaciona o peso e a altura de uma pessoa, ajudando-a avaliar seu peso ideal.\n"
-        "Para avaliar seu IMC, clique em 'Cálcular IMC' logo abaixo:\n\n",
+        "\n\n👇Para avaliar seu IMC, clique em 'Cálcular IMC' logo abaixo:\n\n",
         parse_mode="Markdown",
         reply_markup=menu_imc_inline(),
     )
-    bot.register_next_step_handler(sent, processar_imc, bot) # esse aqui vai em outro
 
 def iniciar_calculo_imc_manual(bot, chat_id):
     sent = bot.send_message(
         chat_id, 
-        "Digite seu peso em *kg* (ex: 70.5):", 
+        "Passo 1:\n\nDigite seu peso em *kg* (ex: 70.5):\n", 
         parse_mode="Markdown",
         reply_markup=menu_cancelar()
     )
@@ -59,14 +60,14 @@ def pegar_peso(message, bot):
     except Exception:
         sent = bot.send_message(
             message.chat.id,
-            "⚠️ Peso inválido. Digite apenas números (ex: 70.5):",
+            "ooops!\n\n⚠️ Peso inválido.\n\nDigite apenas números (ex: 70.5):",
             reply_markup=menu_cancelar()
         )
         return bot.register_next_step_handler(sent, pegar_peso, bot)
 
     sent2 = bot.send_message(
         message.chat.id,
-        "📏 Agora digite sua altura em *metros* (ex: 1.75):",
+        "Passo 2:\n\n📏 Agora digite sua altura em *metros* (ex: 1.75):\n",
         parse_mode="Markdown",
         reply_markup=menu_cancelar(),
     )
@@ -85,7 +86,7 @@ def pegar_altura(message, bot, peso):
     except Exception:
         sent = bot.send_message(
             message.chat.id,
-            "⚠️ Altura inválida. Use ponto ou vírgula (ex: 1.75):",
+            "ooops!\n\n⚠️ Altura inválida. Use ponto ou vírgula (ex: 1.75):\n",
             reply_markup=menu_cancelar()
         )
         return bot.register_next_step_handler(sent, pegar_altura, bot, peso)
@@ -102,6 +103,19 @@ def pegar_altura(message, bot, peso):
         f"[{barra}]\n"
         f"🏷 *Status:* {categoria}\n\n"
         f"━━━━━━━━━━━━━━━━━━━━" 
+        f"fonte: Organização Mundial da Saúde (OMS) ]n" 
+    )
+    
+    bot.send_message(message.chat.id, resposta, parse_mode="Markdown")
+
+    sleep(2)
+
+    resposta2 = (
+        f"━━━━━━━━ ⚠ atenção ━━━━━━━━━━━━\n" 
+        f"Esse cálculo é apenas informativo\n" 
+        f"e segue os critérios estipulados\n" 
+        f"pela OMS, e não substitui uma avaliação\n" 
+        f"com um profissional da saúde.\n" 
     )
 
-    bot.send_message(message.chat.id, resposta, parse_mode="Markdown", reply_markup=menu_conclusao())
+    bot.send_message(message.chat.id, resposta2, parse_mode="Markdown", reply_markup=menu_conclusao())

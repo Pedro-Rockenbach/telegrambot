@@ -51,6 +51,11 @@ def menu_emergencia_secundario():
 
 def menu_conclusao():
     kb = InlineKeyboardMarkup()
+    kb.add(
+        InlineKeyboardButton(
+            "🔄 Fazer outro cálculo", callback_data="cancelar_voltar_ferramentas"
+        )
+    )
     kb.row(
         InlineKeyboardButton("🏠 Menu Principal", callback_data="voltar_inicio"),
         InlineKeyboardButton("👋 Sair", callback_data="sair_final"),
