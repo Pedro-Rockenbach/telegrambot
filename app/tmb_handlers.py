@@ -20,7 +20,7 @@ def iniciar_tmb(bot, msg):
         chat_id,
         f"🔥 *Cálculo de Taxa Metabólica Basal*\n\n"
         "A Taxa Metabólica Basal (TMB) é a quantidade mínima de calorias que seu corpo precisa para\n"
-        "manter funções vitais em repouso absoluto, como respiração, circulação sanguínea e manutenção da temperatura corporal.,
+        "manter funções vitais em repouso absoluto, como respiração, circulação sanguínea e manutenção da temperatura corporal.",
         parse_mode="Markdown"
     )
     bot.send_message(
