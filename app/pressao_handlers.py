@@ -22,6 +22,8 @@ def classificar_pressao(sistolica: int, diastolica: int) -> str:
 
 INFO_PRESSAO = (
     "📚 *Informações sobre Pressão Arterial*\n\n"
+    "Pressão arterial é a força que o sangue exerce contra as paredes "
+    "das artérias enquanto é bombeado pelo coração para circular pelo corpo.\n\n"
     "Valores de referência (OMS):\n"
     "🟢 Normal: < 120/80\n"
     "🟡 Limítrofe: 120-139 / 80-89\n"

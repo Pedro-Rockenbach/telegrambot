@@ -97,12 +97,12 @@ def pegar_altura(message, bot, peso):
 
     resposta = (
         f"📊 *RESULTADO DO IMC*\n"
-        f"━━━━━━━━━━━━━━━━━━━━\n\n"
+        f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
         f"👤 *Dados:* {peso}kg | {altura}m\n"
         f"👉 *IMC:* {imc:.2f}\n"
         f"[{barra}]\n"
         f"🏷 *Status:* {categoria}\n\n"
-        f"━━━━━━━━━━━━━━━━━━━━\n" 
+        f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" 
         f"fonte: Organização Mundial da Saúde (OMS)" 
     )
     
@@ -112,9 +112,9 @@ def pegar_altura(message, bot, peso):
 
     resposta2 = (
         f"━━━━━━━━ ⚠ atenção ━━━━━━━━━━━━\n" 
-        f"Esse cálculo é apenas informativo" 
+        f"Esse cálculo é apenas informativo " 
         f"e segue os critérios recomendados" 
-        f"pela OMS.\nO reesultado não substitui uma avaliação" 
+        f"pela OMS. O reesultado não substitui uma avaliação" 
         f"com um profissional da saúde.\n\n" 
     )
 

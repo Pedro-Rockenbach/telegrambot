@@ -11,7 +11,7 @@ from .keyboard import (
 )
 
 RISK_INTRO = (
-    "❤️ *Risco Cardíaco*\nVamos fazer uma estimativa rápida.\n\nDigite sua *idade*:"
+    "Vamos fazer uma estimativa rápida.\n\nPrimeiro, digite sua *idade*:"
 )
 
 RISK_DISCLAIMER = (
@@ -26,7 +26,12 @@ RISCO_CACHE = {}
 def iniciar_risco(bot, msg):
     chat_id = msg.message.chat.id if hasattr(msg, "message") else msg.chat.id
     RISCO_CACHE[chat_id] = {}
-
+    riscocard = (
+        f"🫀 *Risco Cardiáco* \n\nO cálculo de risco cardíaco é uma ferramenta usada para estimar a probabilidade de uma pessoa ter um evento cardiovascular, como infarto ou AVC, nos próximos 10 anos."
+    ) 
+    bot.send_message(
+        chat_id, riscocard, parse_mode="Markdown"
+    )
     sent = bot.send_message(
         chat_id, RISK_INTRO, parse_mode="Markdown", reply_markup=menu_cancelar()
     )
@@ -92,7 +97,7 @@ def callback_risco_diabetes(bot, call):
     is_sim = "_s" in call.data
     if chat_id in RISCO_CACHE:
         RISCO_CACHE[chat_id]["diabetes"] = is_sim
-
+    
     sent = bot.send_message(
         chat_id,
         "🩺 Digite sua pressão sistólica (o valor maior, ex: *120*):",
