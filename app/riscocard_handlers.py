@@ -159,7 +159,7 @@ def pegar_chol(message, bot):
     resultado_texto = _calcular_risco(dados)
 
     # Formatação final bonita
-    mensagem_final = f"{resultado_texto}\n\n{RISK_DISCLAIMER}\n━━━━━━━━━━━━━━━━━━━━"
+    mensagem_final = f"{resultado_texto}\n\n{RISK_DISCLAIMER}\n"
 
     bot.send_message(
         chat_id, mensagem_final, parse_mode="Markdown", reply_markup=menu_conclusao()
@@ -207,8 +207,7 @@ def _calcular_risco(data: Dict) -> str:
         nivel = "🔴 ALTO (>20%)"
 
     return (
-        f"❤️ *ESTIMATIVA DE RISCO*\n"
-        f"━━━━━━━━━━━━━━━━━━━━\n\n"
+        f"❤️ *ESTIMATIVA DE RISCO*\n\n"
         f"👤 *Perfil:* {sexo}, {idade} anos\n"
         f"🚬 *Fumante:* {'Sim' if fumante else 'Não'}\n"
         f"🍬 *Diabetes:* {'Sim' if diabetes else 'Não'}\n"

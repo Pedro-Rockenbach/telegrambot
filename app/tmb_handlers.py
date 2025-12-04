@@ -135,7 +135,7 @@ def calcular_final(message, bot):
 
     bot.send_message(
         chat_id,
-        f"⚠ *aviso*\n\n Esse é um cálculo estimado baseado em uma fórmula matemática.]n"
+        f"⚠ *aviso*\n\n Esse é um cálculo estimado baseado em uma fórmula matemática. "
         "Para informações mais precisas, consulte um profissional da saúde.",
         parse_mode="Markdown",
         reply_markup=menu_conclusao()

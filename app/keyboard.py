@@ -123,4 +123,10 @@ def checar_cancelamento(text):
     if text is None:
         return False
     t = text.strip().lower()
-    return t in ("sair", "/sair", "cancel", "/cancel", "cancelar", "/cancelar")
+
+    comandos_cancelar = (
+        "sair", "/sair", "cancel", "/cancel", "cancelar", "/cancelar", 
+        "/start", "/menu", "menu", "start"
+    )
+
+    return t in comandos_cancelar

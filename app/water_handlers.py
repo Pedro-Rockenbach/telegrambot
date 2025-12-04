@@ -43,10 +43,11 @@ def pegar_peso_agua(message, bot):
 
     texto = (
         f"💧 *Consumo diário recomendado de água*\n"
-        f"━━━━━━━━━━━━━━━━━━━━\n\n"
-        f"Para seu peso de {peso:.1f} kg:\n"
+        f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+        f"Para seu peso de {peso:.1f} kg:\n\n"
         f"➡️ *{agua_litros:.2f} litros* por dia.\n\n"
-        f"━━━━━━━━━━━━━━━━━━━━"
+        f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        f"fonte: Organização Mundial da Saúde."
     )
 
     bot.send_message(
