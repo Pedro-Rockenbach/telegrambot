@@ -18,9 +18,15 @@ def iniciar_tmb(bot, msg):
     TMB_CACHE[chat_id] = {}
     bot.send_message(
         chat_id,
-        "🔥 *Cálculo TMB*\n\nPrimeiro, qual seu sexo biológico?",
+        f"🔥 *aviso*\n\n Esse é um cálculo estimado baseado em uma fórmula matemática.]n"
+        "Para informações mais precisas, consulte um profissional da saúde.",
+        parse_mode="Markdown"
+    )
+    bot.send_message(
+        chat_id,
+        "🧬 *Cálculo TMB*\n\nPrimeiro, qual seu sexo biológico?",
         parse_mode="Markdown",
-        reply_markup=menu_sexo("tmb"),
+        reply_markup=menu_sexo("tmb")
     )
 
 
@@ -118,12 +124,20 @@ def calcular_final(message, bot):
 
     bot.send_message(
         chat_id,
-        f"🔥 *RESULTADO TMB*\n━━━━━━━━━━━━━━━━━━━━\n\n"
+        f"🔥 *RESULTADO TMB*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
         f"Dados: {sexo_text}, {peso}kg, {altura:.0f}cm, {idade} anos\n"
         f"➡️ Gasto Basal: *{tmb:.0f} kcal/dia*\n\n"
-        f"━━━━━━━━━━━━━━━━━━━━",
+        f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        f"fonte: Equação de Harris-Benedict",
+        parse_mode="Markdown"
+    )
+
+    bot.send_message(
+        chat_id,
+        f"⚠ *aviso*\n\n Esse é um cálculo estimado baseado em uma fórmula matemática.]n"
+        "Para informações mais precisas, consulte um profissional da saúde.",
         parse_mode="Markdown",
-        reply_markup=menu_conclusao(),
+        reply_markup=menu_conclusao()
     )
     if chat_id in TMB_CACHE:
         del TMB_CACHE[chat_id]
