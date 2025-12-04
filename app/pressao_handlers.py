@@ -1,3 +1,4 @@
+# calcula a pressao
 from .keyboard import (
     criar_menu_ferramentas, 
     checar_cancelamento, 
@@ -7,7 +8,6 @@ from .keyboard import (
     menu_conclusao
 )
 
-# --- Classificação da pressão ---
 def classificar_pressao(sistolica: int, diastolica: int) -> str:
     if sistolica < 90 or diastolica < 60:
         return "Pressão BAIXA (Hipotensão)"
@@ -30,7 +30,6 @@ INFO_PRESSAO = (
 )
 
 
-# --- Handler principal ---
 def iniciar_pressao(bot, msg):
     chat_id = msg.message.chat.id if hasattr(msg, 'message') else msg.chat.id
     bot.send_message(

@@ -1,8 +1,6 @@
 # app/keyboard.py
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-
-# --- 1. O Novo Menu Principal (Tela Inicial) ---
 def criar_menu_inicial():
     kb = InlineKeyboardMarkup()
     # Botão de Ação principal
@@ -11,13 +9,15 @@ def criar_menu_inicial():
     )
     # Botões informativos
     kb.row(
-        InlineKeyboardButton("🤖 Quem Somos", callback_data="quem_somos"),
-        InlineKeyboardButton("⚠️ Avisos Importantes", callback_data="avisos"),
+        InlineKeyboardButton("🎒 Quem Somos", callback_data="quem_somos"),
+        InlineKeyboardButton("🤖 Sobre o Hermes", callback_data="sobre_hermes"),
+    )
+
+    kb.add(
+        InlineKeyboardButton("⚠ Avisos importantes", callback_data="avisos")
     )
     return kb
 
-
-# --- 2. O Menu de Ferramentas (Antigo Principal - Grade) ---
 def criar_menu_ferramentas():
     kb = InlineKeyboardMarkup()
     kb.row(
@@ -37,8 +37,6 @@ def criar_menu_ferramentas():
     kb.add(InlineKeyboardButton("🔙 Voltar ao Início", callback_data="voltar_inicio"))
     return kb
 
-
-# --- 3. Menu de Finalização (Pós-cálculo) ---
 def menu_conclusao():
     kb = InlineKeyboardMarkup()
     kb.row(

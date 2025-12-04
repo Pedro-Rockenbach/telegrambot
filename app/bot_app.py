@@ -32,7 +32,6 @@ def create_bot():
         func=lambda m: (m.text or "").strip().lower() in ("calcular tmb", "tmb"),
     )
 
-    # PRESSÃO: Atualizado para chamar iniciar_pressao (que abre o menu inline)
     bot.register_message_handler(
         lambda m: iniciar_pressao(bot, m),
         func=lambda m: (m.text or "").strip().lower() in ("pressão", "pressao"),

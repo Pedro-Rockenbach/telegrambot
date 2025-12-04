@@ -1,7 +1,7 @@
 # main.py
 from app.bot_app import bot
 from app.keyboard import criar_menu_inicial, criar_menu_ferramentas, texto_cancelado
-from app.common_handlers import MSG_QUEM_SOMOS, MSG_AVISOS, MSG_SAIDA
+from app.common_handlers import MSG_QUEM_SOMOS, MSG_AVISOS, MSG_SAIDA, MSG_SOBRE_HERMES
 
 from app.imc_handlers import iniciar_imc
 from app.tmb_handlers import iniciar_tmb, callback_tmb_sexo
@@ -46,6 +46,11 @@ def callback_router(call):
             chat_id,
             MSG_QUEM_SOMOS,
             parse_mode="Markdown",
+            reply_markup=criar_menu_inicial(),
+        )
+    elif data == "sobre_hermes":
+        bot.send_message(
+            chat_id, MSG_SOBRE_HERMES, parse_mode="Markdown",
             reply_markup=criar_menu_inicial(),
         )
 
