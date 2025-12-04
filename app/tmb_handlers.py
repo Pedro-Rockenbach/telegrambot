@@ -18,13 +18,14 @@ def iniciar_tmb(bot, msg):
     TMB_CACHE[chat_id] = {}
     bot.send_message(
         chat_id,
-        f"🔥 *aviso*\n\n Esse é um cálculo estimado baseado em uma fórmula matemática.]n"
-        "Para informações mais precisas, consulte um profissional da saúde.",
+        f"🔥 *Cálculo de Taxa Metabólica Basal*\n\n"
+        "A Taxa Metabólica Basal (TMB) é a quantidade mínima de calorias que seu corpo precisa para\n"
+        "manter funções vitais em repouso absoluto, como respiração, circulação sanguínea e manutenção da temperatura corporal.,
         parse_mode="Markdown"
     )
     bot.send_message(
         chat_id,
-        "🧬 *Cálculo TMB*\n\nPrimeiro, qual seu sexo biológico?",
+        "Para começar o cálculo, selecione seu sexo biológico?\n",
         parse_mode="Markdown",
         reply_markup=menu_sexo("tmb")
     )
