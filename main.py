@@ -3,7 +3,7 @@ from app.bot_app import bot
 from app.keyboard import criar_menu_inicial, criar_menu_ferramentas, texto_cancelado
 from app.common_handlers import MSG_QUEM_SOMOS, MSG_AVISOS, MSG_SAIDA, MSG_SOBRE_HERMES
 
-from app.imc_handlers import iniciar_imc, imc_calcular, iniciar_calculo_imc_manual
+from app.imc_handlers import iniciar_imc, iniciar_calculo_imc_manual
 from app.tmb_handlers import iniciar_tmb, callback_tmb_sexo
 from app.water_handlers import iniciar_agua
 from app.riscocard_handlers import (
@@ -96,7 +96,7 @@ def callback_router(call):
 
     #menu secundario do imc
     elif data == "imc_calcular":
-        iniciar_calculo_imc_manual(bot, call)
+        iniciar_calculo_imc_manual(bot, chat_id)
     # --- FLUXOS INTERNOS (TMB/RISCO) ---
     elif data.startswith("tmb_sexo"):
         callback_tmb_sexo(bot, call)
