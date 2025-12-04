@@ -53,7 +53,7 @@ def menu_conclusao():
     kb = InlineKeyboardMarkup()
     kb.add(
         InlineKeyboardButton(
-            "🔄 Fazer outro cálculo", callback_data="cancelar_voltar_ferramentas"
+            "🔄 Fazer outro cálculo", callback_data="criar_menu_refazer_calculos"
         )
     )
     kb.row(

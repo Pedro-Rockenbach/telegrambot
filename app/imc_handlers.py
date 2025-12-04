@@ -102,20 +102,20 @@ def pegar_altura(message, bot, peso):
         f"👉 *IMC:* {imc:.2f}\n"
         f"[{barra}]\n"
         f"🏷 *Status:* {categoria}\n\n"
-        f"━━━━━━━━━━━━━━━━━━━━" 
-        f"fonte: Organização Mundial da Saúde (OMS) ]n" 
+        f"━━━━━━━━━━━━━━━━━━━━\n" 
+        f"fonte: Organização Mundial da Saúde (OMS)" 
     )
     
     bot.send_message(message.chat.id, resposta, parse_mode="Markdown")
 
-    sleep(2)
+    sleep(3)
 
     resposta2 = (
         f"━━━━━━━━ ⚠ atenção ━━━━━━━━━━━━\n" 
-        f"Esse cálculo é apenas informativo\n" 
-        f"e segue os critérios estipulados\n" 
-        f"pela OMS, e não substitui uma avaliação\n" 
-        f"com um profissional da saúde.\n" 
+        f"Esse cálculo é apenas informativo" 
+        f"e segue os critérios recomendados" 
+        f"pela OMS.\nO reesultado não substitui uma avaliação" 
+        f"com um profissional da saúde.\n\n" 
     )
 
     bot.send_message(message.chat.id, resposta2, parse_mode="Markdown", reply_markup=menu_conclusao())

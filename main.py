@@ -88,7 +88,11 @@ def callback_router(call):
         bot.send_message(
             chat_id, texto_cancelado(), reply_markup=criar_menu_ferramentas()
         )
-
+    elif data == "criar_menu_refazer_calculos":
+        bot.clear_step_handler_by_chat_id(chat_id)
+        bot.send_message(
+            chat_id, texto_cancelado(), reply_markup=criar_menu_ferramentas()
+        )
     # --- FERRAMENTAS ---
     elif data == "imc":
         iniciar_imc(bot, call)
