@@ -114,7 +114,7 @@ def pegar_altura(message, bot, peso):
         f"━━━━━━━━ ⚠ atenção ━━━━━━━━━━━━\n" 
         f"Esse cálculo é apenas informativo " 
         f"e segue os critérios recomendados " 
-        f"pela OMS. O resultado não substitui uma avaliação" 
+        f"pela OMS. O resultado não substitui uma avaliação " 
         f"com um profissional da saúde.\n\n" 
     )
 
